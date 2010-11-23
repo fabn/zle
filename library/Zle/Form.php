@@ -1,6 +1,6 @@
 <?php
 
-class Zle_Form extends Zend_Form
+abstract class Zle_Form extends Zend_Form
 {
 
     /**
