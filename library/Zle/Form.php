@@ -21,9 +21,9 @@ abstract class Zle_Form extends Zend_Form
                         'validate');
         if (($ns = $this->getNamespace())) {
             // add path for elements
-            $this->addPrefixPath("$ns_Form_Element", "$ns/Form/Element/", 'element');
+            $this->addPrefixPath("{$ns}_Form_Element", "$ns/Form/Element/", 'element');
             // add path for validators
-            $this->addElementPrefixPath("$ns_Validate", "$ns/Validate/",
+            $this->addElementPrefixPath("{$ns}_Validate", "$ns/Validate/",
                             'validate');
         }
         // call abstract method that init form elements
