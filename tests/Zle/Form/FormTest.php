@@ -68,7 +68,7 @@ class FormTest extends PHPUnit_Framework_TestCase
 
     public function testAddHiddenIsWorking()
     {
-        $hiddenName  = 'foo';
+        $hiddenName = 'foo';
         $hiddenValue = 'bar';
         $this->_form->addHidden($hiddenName, $hiddenValue);
         $hidden = $this->_form->getElement($hiddenName);
@@ -82,5 +82,32 @@ class FormTest extends PHPUnit_Framework_TestCase
             1, count($hidden->getDecorators()),
             'confirm should have only the view helper decorator'
         );
+    }
+
+    public function testPluginPathsAreSet()
+    {
+        $form = new Form_Test();
+        $paths = $form->getPluginLoader(Zend_Form::ELEMENT)->getPaths();
+        $this->assertArrayHasKey(
+            'Test_Form_Element_', $paths,
+            'Paths should contain Test namespace'
+        );
+    }
+}
+
+/**
+ * Class used for testing
+ *
+ * @see FormTest::testPluginPathsAreSet
+ */
+class Form_Test extends Zle_Form
+{
+    protected function initComponents()
+    {
+    }
+
+    protected function getNamespace()
+    {
+        return 'Test';
     }
 }
