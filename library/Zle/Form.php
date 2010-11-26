@@ -35,7 +35,7 @@ abstract class Zle_Form extends Zend_Form
      *
      * @param string $value the title for this form
      *
-     * @return Zend_Form
+     * @return Zle_Form
      */
     public function setTitle($value)
     {
