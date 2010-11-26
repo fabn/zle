@@ -21,7 +21,7 @@ error_reporting( E_ALL | E_STRICT );
 set_include_path(
     implode(
         PATH_SEPARATOR,
-        array(get_include_path(), realpath(__DIR__ . '/../library/'))
+        array(get_include_path(), realpath(dirname(__FILE__) . '/../library/'))
     )
 );
 
