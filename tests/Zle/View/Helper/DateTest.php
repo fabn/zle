@@ -84,10 +84,6 @@ class DateTest extends PHPUnit_Framework_TestCase
             $this->_helper->date(new stdClass());
             $this->fail('Expected exception not raised');
         } catch (PHPUnit_Framework_Error $e) {
-            $this->assertEquals(
-                'Object of class stdClass could not be converted to string',
-                $e->getMessage()
-            );
         }
     }
 }
