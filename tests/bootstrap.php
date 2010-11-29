@@ -25,6 +25,9 @@ set_include_path(
     )
 );
 
+// raise memory limit
+ini_set('memory_limit', '512M');
+
 // load the auto loader and register namespaces
 require_once 'Zend/Loader/Autoloader.php';
 $autoloader = Zend_Loader_Autoloader::getInstance();
