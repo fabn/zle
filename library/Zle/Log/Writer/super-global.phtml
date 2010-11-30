@@ -1,0 +1,11 @@
+<? if (!empty($this->value)) : ?>
+<tr>
+    <th colspan="2">Content of $_<?=$this->name?></th>
+</tr>
+<? foreach ($this->value as $name => $value) : ?>
+    <tr>
+        <td>$_<?=$this->name?>['<?=$name?>']</td>
+        <td><?=$value?></td>
+    </tr>
+    <? endforeach; ?>
+<? endif; ?>

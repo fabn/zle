@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="it" xml:lang="it">
+<head>
+    <title>Email log for project errors</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <style type="text/css">
+        body {
+            margin: 0;
+            padding: 0;
+            font: 12px Tahoma, Verdana, sans-serif;
+        }
+
+        div#center {
+            margin: 10px;
+            border: 1px dashed #CC0000;
+            background-color: #EEE;
+        }
+
+        h1, h2 {
+            font-weight: lighter;
+            font-size: 24px;
+            color: #CC0000;
+            background-color: #DDD;
+            text-align: center;
+            margin: 0;
+            padding: 3px;
+        }
+
+        h2 {
+            margin: 10px 0;
+        }
+
+        table {
+            width: 98%;
+            margin: 10px auto;
+            border-collapse: collapse;
+        }
+
+        .messages th {
+            background-color: #CCC;
+            border: 1px solid #CCC;
+            font-size: 16px;
+        }
+
+        .messages td {
+            border: 1px solid #CCC;
+            padding: 6px;
+        }
+
+        .messages table {
+            font-size: 10px;
+        }
+
+        .messages table th {
+            background-color: #CCC;
+            border: 1px solid #CCC;
+            font-size: 14px;
+        }
+
+        .info th {
+            text-align: right;
+            width: 100px;
+        }
+
+        .info td, .info th {
+            padding: 5px;
+        }
+
+        .variables {
+            margin-left: auto;
+            margin-right: auto;
+            width: 50%;
+            border: 1px solid #CCC;
+        }
+
+        .variables th {
+            background-color: #CCC;
+        }
+
+        .variables td {
+            border: 1px solid #CCC;
+            padding: 2px;
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="center">
+    <h1>PHP Script Errors</h1>
+
+    <table class="info">
+        <tr>
+            <th>Date:</th>
+            <td><?=Zend_Date::now()?></td>
+        </tr>
+        <? if (isset($_SERVER['SERVER_NAME'])) : ?>
+        <tr>
+            <th>Server:</th>
+            <td><?=$_SERVER['SERVER_NAME']?> (<?=$_SERVER['SERVER_ADDR']?>)</td>
+        </tr>
+        <tr>
+            <th>Uri:</th>
+            <td><?=$_SERVER['REQUEST_URI']?> (Requested using <?=$_SERVER['REQUEST_METHOD']?>)</td>
+        </tr>
+        <tr>
+            <th>Client:</th>
+            <td>
+                <a href="http://www.cqcounter.com/whois/?query=<?=$_SERVER['REMOTE_ADDR']?>"><?=$_SERVER['REMOTE_ADDR']?></a>
+            </td>
+        </tr>
+        <tr>
+            <th>User Agent:</th>
+            <td><?=$_SERVER['HTTP_USER_AGENT']?></td>
+        </tr>
+        <? endif; ?>
+    </table>
+
+    <table class="messages">
+        <thead>
+        <tr>
+            <th>Timestamp</th>
+            <th>Priority</th>
+            <th>Message</th>
+        </tr>
+        </thead>
+        <tbody>
+        <?=$this->layout()->events?>
+        </tbody>
+    </table>
+
+    <?php
+    $toDump = array(
+    array('name' => 'GET', 'value' => $_GET),
+    array('name' => 'POST', 'value' => $_POST),
+    array('name' => 'COOKIE', 'value' => $_COOKIE),
+    array(
+        'name' => 'SESSION',
+        'value' => isset($_SESSION) ? $_SESSION : array()),
+    array('name' => 'SERVER', 'value' => $_SERVER));
+    ?>
+
+    <h2>Full Dump of PHP variables</h2>
+
+    <table class="variables">
+        <?=$this->partialLoop('super-global.phtml', $toDump)?>
+    </table>
+
+</div>
+
+<div id="footer"></div>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<table>
+    <tr>
+        <th colspan="4"><?=get_class($this->exception)?> Information</th>
+    </tr>
+    <tr>
+        <th>Code</th>
+        <th>Message</th>
+        <th>Line</th>
+        <th>File</th>
+    </tr>
+    <tr>
+        <td><?=$this->exception->getCode()?></td>
+        <td><?=$this->exception->getMessage()?></td>
+        <td><?=$this->exception->getLine()?></td>
+        <td><?=$this->exception->getFile()?></td>
+    </tr>
+    <tr>
+        <th colspan="4"><?=get_class($this->exception)?> Stack Trace</th>
+    </tr>
+    <tr>
+        <th>#</th>
+        <th>Class/Function</th>
+        <th>Line</th>
+        <th>File</th>
+    </tr>
+    <? foreach ($this->exception->getTrace() as $index => $trace) : ?>
+    <tr>
+        <td>#<?=$index?></td>
+        <td><?=(isset($trace['class']) ? $trace['class'] : '') . (isset($trace['type']) ? $trace['type'] : '') . (isset($trace['function']) ? $trace['function'] : '')?></td>
+        <td><?=isset($trace['line']) ? $trace['line'] : '-'?></td>
+        <td><?=isset($trace['file']) ? $trace['file'] : '-'?></td>
+    </tr>
+    <? endforeach; ?>
+</table>
