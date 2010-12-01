@@ -36,7 +36,7 @@ class DateTest extends PHPUnit_Framework_TestCase
 
     public function testHelperWorksWithStrings()
     {
-        $date = date('Y-m-d');
+        $date = date('Y-M-d');
         $expected = new Zend_Date();
         $this->assertEquals(
             $expected->get(Zend_Date::DATE_LONG),
