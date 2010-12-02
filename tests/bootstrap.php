@@ -21,9 +21,16 @@ error_reporting( E_ALL | E_STRICT );
 set_include_path(
     implode(
         PATH_SEPARATOR,
-        array(get_include_path(), realpath(dirname(__FILE__) . '/../library/'))
+        array(
+             realpath(dirname(__FILE__) . '/../library/'),
+             get_include_path(),
+        )
     )
 );
+
+if (!defined('APPLICATION_ENV')) {
+    define('APPLICATION_ENV', 'testing');
+}
 
 // raise memory limit
 ini_set('memory_limit', '512M');
