@@ -6,7 +6,7 @@
  * PHP version 5
  *
  * @category Zle
- * @package  Zle_
+ * @package  Zle_Application
  * @author   Fabio Napoleoni <f.napoleoni@gmail.com>
  * @license  http://framework.zend.com/license/new-bsd New BSD License
  * @link     http://framework.zend.com/
