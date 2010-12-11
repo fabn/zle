@@ -41,7 +41,7 @@ class NotifierTest extends PHPUnit_Framework_TestCase
             ),
         ),
     );
-    
+
     protected $resourceOptions = array(
         'addresses' => 'foo@example.org',
     );
@@ -87,6 +87,23 @@ class NotifierTest extends PHPUnit_Framework_TestCase
         $resource->init();
         $log = $resource->getBootstrap()->getResource('log');
         $this->assertContains(
+            'Zle_Log_Writer_Mail',
+            var_export($log, true),
+            'Log object should contain Zle_Log_Writer_Mail as Writer'
+        );
+    }
+
+    public function testFlagDisableNotifier()
+    {
+        $this->bootstrap->setOptions($this->logOptions);
+        $resource = new Zle_Application_Resource_Notifier();
+        $resource->setBootstrap($this->bootstrap);
+        $resource->setOptions(
+            array_merge($this->resourceOptions, array('disabled' => true))
+        );
+        $resource->init();
+        $log = $resource->getBootstrap()->getResource('log');
+        $this->assertNotContains(
             'Zle_Log_Writer_Mail',
             var_export($log, true),
             'Log object should contain Zle_Log_Writer_Mail as Writer'

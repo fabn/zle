@@ -41,8 +41,12 @@ class Zle_Application_Resource_Notifier extends Zend_Application_Resource_Resour
     public function init()
     {
         if (!$this->_mailWriter) {
-            $this->_mailWriter = new Zle_Log_Writer_Mail($this->getOptions());
-            $this->getLog()->addWriter($this->_mailWriter);
+            if (!isset($this->_options['disabled'])
+                || $this->_options['disabled'] == false
+            ) {
+                $this->_mailWriter = new Zle_Log_Writer_Mail($this->getOptions());
+                $this->getLog()->addWriter($this->_mailWriter);
+            }
         }
         return $this->_mailWriter;
     }
