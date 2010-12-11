@@ -68,8 +68,6 @@ class Zle_Application_Resource_Translate extends Zend_Application_Resource_Trans
     {
         if (null === $this->_translate) {
             $this->buildLog();
-            // fetch translate object
-            $t = parent::getTranslate();
             // retrieve cache if requested
             if (isset($this->_options['cacheEnabled'])
                 && $this->_options['cacheEnabled']
@@ -93,8 +91,13 @@ class Zle_Application_Resource_Translate extends Zend_Application_Resource_Trans
                         . "the key {$this->getCacheKey()}"
                     );
                 }
-                $t->setCache($cacheManager->getCache($this->getCacheKey()));
+                // set cache for translator
+                Zend_Translate_Adapter::setCache(
+                    $cacheManager->getCache($this->getCacheKey())
+                );
             }
+            // fetch translate object into local variable
+            $this->_translate = parent::getTranslate();
         }
         return $this->_translate;
     }
