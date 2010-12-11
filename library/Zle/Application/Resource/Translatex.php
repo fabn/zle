@@ -13,7 +13,7 @@
  */
 
 /**
- * Translate
+ * Zle_Application_Resource_Translatex
  *
  * @category Zle
  * @package  Zle_Application
@@ -21,7 +21,7 @@
  * @license  http://framework.zend.com/license/new-bsd New BSD License
  * @link     http://framework.zend.com/
  */
-class Zle_Application_Resource_Translate extends Zend_Application_Resource_Translate
+class Zle_Application_Resource_Translatex extends Zend_Application_Resource_Translate
 {
 
     /**

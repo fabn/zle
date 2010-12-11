@@ -27,7 +27,7 @@ class TranslateTest extends PHPUnit_Framework_TestCase
     protected $cacheOptions = array(
         'resources' => array(
             'cachemanager' => array(
-                Zle_Application_Resource_Translate::DEFAULT_CACHE_KEY => array(
+                Zle_Application_Resource_Translatex::DEFAULT_CACHE_KEY => array(
                     'frontend' => array(
                         'name' => 'Core',
                         'options' => array(
@@ -52,7 +52,7 @@ class TranslateTest extends PHPUnit_Framework_TestCase
             'message2' => 'message2',
             'message3' => 'message3'
         ),
-        'cacheKey' => Zle_Application_Resource_Translate::DEFAULT_CACHE_KEY,
+        'cacheKey' => Zle_Application_Resource_Translatex::DEFAULT_CACHE_KEY,
         'cacheEnabled' => false,
     );
 
@@ -110,7 +110,7 @@ class TranslateTest extends PHPUnit_Framework_TestCase
                 ),
             ),
         ));
-        $resource = new Zle_Application_Resource_Translate();
+        $resource = new Zle_Application_Resource_Translatex();
         $resource->setBootstrap($this->bootstrap);
         $resource->setOptions(array_merge($this->resourceOptions, $options));
         $translate = $resource->init();
@@ -130,7 +130,7 @@ class TranslateTest extends PHPUnit_Framework_TestCase
     public function testTranslatorDoesNotHaveLoggerWhenKeyIsFalse()
     {
         $options = array('log' => false);
-        $resource = new Zle_Application_Resource_Translate();
+        $resource = new Zle_Application_Resource_Translatex();
         $resource->setBootstrap($this->bootstrap);
         $resource->setOptions(array_merge($this->resourceOptions, $options));
         $resource->setOptions($this->resourceOptions);
@@ -148,7 +148,7 @@ class TranslateTest extends PHPUnit_Framework_TestCase
     {
         try {
             $options = array('cacheEnabled' => true);
-            $resource = new Zle_Application_Resource_Translate();
+            $resource = new Zle_Application_Resource_Translatex();
             $resource->setBootstrap($this->bootstrap);
             $resource->setOptions(array_merge($this->resourceOptions, $options));
             $resource->init();
@@ -163,7 +163,7 @@ class TranslateTest extends PHPUnit_Framework_TestCase
         try {
             $options = array('cacheEnabled' => true, 'cacheKey' => 'wrongKey');
             $this->bootstrap->setOptions($this->cacheOptions);
-            $resource = new Zle_Application_Resource_Translate();
+            $resource = new Zle_Application_Resource_Translatex();
             $resource->setBootstrap($this->bootstrap);
             $resource->setOptions(array_merge($this->resourceOptions, $options));
             $resource->init();
@@ -177,19 +177,19 @@ class TranslateTest extends PHPUnit_Framework_TestCase
     {
         $options = array('cacheEnabled' => true);
         $this->bootstrap->setOptions($this->cacheOptions);
-        $resource = new Zle_Application_Resource_Translate();
+        $resource = new Zle_Application_Resource_Translatex();
         $resource->setBootstrap($this->bootstrap);
         $resource->setOptions(array_merge($this->resourceOptions, $options));
         $translate = $resource->init();
         $cache = $this->bootstrap->getResource('cachemanager')
-                ->getCache(Zle_Application_Resource_Translate::DEFAULT_CACHE_KEY);
+                ->getCache(Zle_Application_Resource_Translatex::DEFAULT_CACHE_KEY);
         $this->assertEquals($cache, $translate->getCache());
     }
 
     public function testTranslatorIsDisabledWithFlagToFalse()
     {
         $options = array('cacheEnabled' => false);
-        $resource = new Zle_Application_Resource_Translate();
+        $resource = new Zle_Application_Resource_Translatex();
         $resource->setBootstrap($this->bootstrap);
         $resource->setOptions(array_merge($this->resourceOptions, $options));
         $translate = $resource->init();
@@ -222,7 +222,7 @@ class TranslateTest extends PHPUnit_Framework_TestCase
             ),
         );
         $this->bootstrap->setOptions($cacheOptions);
-        $resource = new Zle_Application_Resource_Translate();
+        $resource = new Zle_Application_Resource_Translatex();
         $resource->setBootstrap($this->bootstrap);
         $resource->setOptions(array_merge($this->resourceOptions, $options));
         $translate = $resource->init();
