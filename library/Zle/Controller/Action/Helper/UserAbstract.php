@@ -28,7 +28,7 @@ abstract class Zle_Controller_Action_Helper_UserAbstract
      * Auth instance
      * @var Zend_Auth
      */
-    protected $_auth;
+    private $_auth;
 
     /**
      * Initialize namespace for auth
@@ -76,6 +76,8 @@ abstract class Zle_Controller_Action_Helper_UserAbstract
      * Store the session id in a persistent way for $days days
      *
      * @param int $days how many days for remember authentication
+     *
+     * @return void
      */
     public function rememberAuth($days = 60)
     {
@@ -112,6 +114,8 @@ abstract class Zle_Controller_Action_Helper_UserAbstract
 
     /**
      * Logout current user
+     *
+     * @return void
      */
     public function logout()
     {
