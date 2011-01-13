@@ -142,6 +142,14 @@ abstract class Zle_Test_NavigationTest extends PHPUnit_Framework_TestCase
             );
         }
         $page = $this->_navigation->findBy($propertyName, $propertyValue);
+        $this->assertNotNull(
+            $page,
+            sprintf(
+                "A page with %s set to %s should exists in navigation",
+                ucfirst($propertyName),
+                $propertyValue
+            )
+        );
         $menu = new Zend_View_Helper_Navigation_Menu();
         $menu->setRole($role)->setAcl($acl);
         $this->assertSame(
