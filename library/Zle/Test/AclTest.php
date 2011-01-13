@@ -51,7 +51,7 @@ abstract class Zle_Test_AclTest extends PHPUnit_Framework_TestCase
      *
      * @return array
      */
-    abstract protected function getSampleData();
+    abstract public function getSampleData();
 
     /**
      * Test acl rules using data coming from the getSampleData method
