@@ -136,8 +136,11 @@ class Zle_View_Helper_Googlemaps extends Zend_View_Helper_Abstract
      */
     public function setLocale($locale)
     {
-        $this->_locale = $locale instanceof Zend_Locale
-                ? $locale : new Zend_Locale($locale);
+        if ($locale instanceof Zend_Locale) {
+                        $this->_locale = $locale;
+        } else {
+            $this->_locale = new Zend_Locale($locale);
+        }
     }
 
     /**
