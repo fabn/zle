@@ -39,4 +39,29 @@ class TTest extends PHPUnit_Framework_TestCase
         $translate = new Zend_View_Helper_Translate();
         $this->assertSame($translate->translate('foo'), $this->_helper->t('foo'));
     }
+
+    public function testUntranslatedStrings()
+    {
+        $text = 'foobar';
+        $this->assertEquals($text, $this->_helper->t($text));
+    }
+
+    public function testTAcceptVarArgsAsArray()
+    {
+        $msg = '%1$s %2$s';
+        $args = array('foo', 'bar');
+        $this->assertEquals('foo bar', $this->_helper->t($msg, $args));
+    }
+
+    public function testTAcceptVarArgsAsList()
+    {
+        $msg = '%1$s %2$s';
+        $this->assertEquals('foo bar', $this->_helper->t($msg, 'foo', 'bar'));
+    }
+
+    public function testTAcceptVarArgsAsListWithInvertedArgs()
+    {
+        $msg = '%2$s %1$s';
+        $this->assertEquals('bar foo', $this->_helper->t($msg, 'foo', 'bar'));
+    }
 }

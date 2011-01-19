@@ -31,11 +31,11 @@ class Zle_View_Helper_T extends Zend_View_Helper_Translate
      * Example 2: translate('%1\$s + %2\$s', array($value1, $value2), $locale);
      *
      * @param string $messageid Id of the message to be translated
-     * 
+     *
      * @return string|Zend_View_Helper_Translate Translated message
      */
     public function t($messageid = null)
     {
-        return $this->translate($messageid);
+        return call_user_func_array(array($this, 'translate'), func_get_args());
     }
 }
