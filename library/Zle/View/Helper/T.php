@@ -36,6 +36,8 @@ class Zle_View_Helper_T extends Zend_View_Helper_Translate
      */
     public function t($messageid = null)
     {
-        return call_user_func_array(array($this, 'translate'), func_get_args());
+        // TODO replace with php 5.3
+        $arguments = func_get_args();
+        return call_user_func_array(array($this, 'translate'), $arguments);
     }
 }
