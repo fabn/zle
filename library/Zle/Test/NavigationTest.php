@@ -156,7 +156,7 @@ abstract class Zle_Test_NavigationTest extends PHPUnit_Framework_TestCase
             $result,
             $menu->accept($page),
             "Page with label {$page->label} is not accepted for role " .
-            $role instanceof Zend_Acl_Role_Interface ? $role->getRoleId() : $role
+            ($role instanceof Zend_Acl_Role_Interface ? $role->getRoleId() : $role)
         );
     }
 }
