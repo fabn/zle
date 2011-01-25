@@ -8,11 +8,11 @@ as extension of the original ZF.
 ## Usage
 * Put the library/Zle folder in your php include path, then simply load the namespace using 
 the `application.ini` file in your zf app by including this line
-    autoloadernamespaces[] = "Zle_"
+        autoloadernamespaces[] = "Zle_"
 * In order to setup paths for other library components you may also want to include the following lines
-    pluginPaths.Zle_Application_Resource = "Zle/Application/Resource" # application resources
-    resources.frontController.actionhelperpaths.Zle_Controller_Action_Helper_ = "Zle/Controller/Action/Helper" # action helpers
-    resources.view.helperPath.Zle_View_Helper = "Zle/View/Helper" # view helpers
+        pluginPaths.Zle_Application_Resource = "Zle/Application/Resource" # application resources
+        resources.frontController.actionhelperpaths.Zle_Controller_Action_Helper_ = "Zle/Controller/Action/Helper" # action helpers
+        resources.view.helperPath.Zle_View_Helper = "Zle/View/Helper" # view helpers
 
 ## Language Support
 * PHP >= 5.2 (in the near future this requirement will be upgraded to 5.3)
@@ -31,6 +31,7 @@ interested in contributing of if you want to generate the api documentation.
 
 In order to keep the code tested and clean I've added an ant script to the code in the file
 `build.xml`. This script can be run using the `ant` command and it will trigger some tasks:
+
 * Run the unittests for the library and generates code coverage report
 * Run phpmd [PHP Mess Detector](http://phpmd.org/)
 * Run pdepend [PHP Depend](http://pdepend.org/)
