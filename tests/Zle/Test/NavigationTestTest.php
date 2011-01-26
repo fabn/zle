@@ -50,7 +50,6 @@ class NavigationTestTest extends PHPUnit_Framework_TestCase
         $suite = new PHPUnit_Framework_TestSuite();
         $suite->addTestSuite('AccessNavigationTestWithNoAcl');
         $suite->run($result = new PHPUnit_Framework_TestResult());
-        $this->assertEquals(2, $result->count());
         $this->assertEquals(1, $result->skippedCount());
     }
 }
