@@ -77,13 +77,4 @@ class DateTest extends PHPUnit_Framework_TestCase
             'Date should be given using the short format'
         );
     }
-
-    public function testHelperDoesntWorkWithNotEchoable()
-    {
-        try {
-            $this->_helper->date(new stdClass());
-            $this->fail('Expected exception not raised');
-        } catch (PHPUnit_Framework_Error $e) {
-        }
-    }
 }
