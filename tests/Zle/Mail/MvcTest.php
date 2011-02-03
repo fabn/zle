@@ -50,4 +50,40 @@ class MvcTest extends PHPUnit_Framework_TestCase
             );
         }
     }
+
+    public function propertyProvider()
+    {
+        return array(
+            array('htmlLayout', false),
+            array('txtLayout', false),
+            array('htmlView', true),
+            array('txtView', true),
+        );
+    }
+
+    /**
+     * Test suffix behaviour with all the four script methods
+     *
+     * @dataProvider propertyProvider
+     * @param string $propertyName property to test
+     * @param bool $suffixExpected expected result flag
+     *
+     * @return void
+     */
+    public function testSuffixesBehaviour($propertyName, $suffixExpected)
+    {
+        $mail = new Zle_Mail_Mvc();
+        $setter = 'set' . ucfirst($propertyName);
+        $getter = 'get' . ucfirst($propertyName);
+        $scriptName = 'foo';
+        $scriptNameWithSuffix = 'foo.phtml';
+        $expected = $suffixExpected ? $scriptNameWithSuffix : $scriptName;
+        $message = $suffixExpected
+                ? "Suffix should be added by $getter"
+                : "Suffix should not be added by $getter";
+        $mail->$setter($scriptName);
+        $this->assertEquals($expected, $mail->$getter(), $message);
+        $mail->$setter($scriptNameWithSuffix);
+        $this->assertEquals($expected, $mail->$getter(), $message);
+    }
 }

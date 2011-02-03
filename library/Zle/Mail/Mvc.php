@@ -100,7 +100,7 @@ class Zle_Mail_Mvc extends Zend_Mail
      */
     public function setHtmlLayout($layout)
     {
-        $this->_htmlLayout = $layout;
+        $this->_htmlLayout = $this->getScriptName($layout, false);
     }
 
     /**
@@ -122,7 +122,7 @@ class Zle_Mail_Mvc extends Zend_Mail
      */
     public function setTxtLayout($layout)
     {
-        $this->_txtLayout = $layout;
+        $this->_txtLayout = $this->getScriptName($layout, false);
     }
 
     /**
@@ -144,7 +144,7 @@ class Zle_Mail_Mvc extends Zend_Mail
      */
     public function setHtmlView($view)
     {
-        $this->_htmlView = $view;
+        $this->_htmlView = $this->getScriptName($view, true);
     }
 
     /**
@@ -166,7 +166,7 @@ class Zle_Mail_Mvc extends Zend_Mail
      */
     public function setTxtView($view)
     {
-        $this->_txtView = $view;
+        $this->_txtView = $this->getScriptName($view, true);
     }
 
     /**
@@ -177,6 +177,28 @@ class Zle_Mail_Mvc extends Zend_Mail
     public function getTxtView()
     {
         return $this->_txtView;
+    }
+
+    /**
+     * Return the name of the script handling differences between
+     * layouts and views
+     *
+     * @param string $name      name of the script
+     * @param bool   $viewStyle if true .phtml suffix will be enforced, otherwise
+     *                          it will be stripped from the name
+     *
+     * @return string
+     */
+    protected function getScriptName($name, $viewStyle)
+    {
+        $hasSuffix = 'phtml' == substr($name, -5);
+        if ($viewStyle && !$hasSuffix) {
+            $name .= '.phtml';
+        }
+        if (!$viewStyle && $hasSuffix) {
+            $name = substr($name, 0, -6);
+        }
+        return $name;
     }
 
     /**
