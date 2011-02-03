@@ -32,7 +32,8 @@ class MvcTest extends PHPUnit_Framework_TestCase
     public function testDirectMethodAreDelegatedToView()
     {
         $mail = new Zle_Mail_Mvc();
-        $this->assertType('Zend_View', $mail->setHelperPath('foo'));
+        $aViewFluentMethod = 'setHelperPath';
+        $this->assertType('Zend_View', $mail->$aViewFluentMethod('foo'));
     }
 
     public function testUnknownMethodsAreWrappedIntoAnException()
