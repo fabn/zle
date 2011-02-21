@@ -51,7 +51,7 @@ class MvcTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    public function propertyProvider()
+        public function propertyProvider()
     {
         return array(
             array('htmlLayout', false),
@@ -104,5 +104,88 @@ class MvcTest extends PHPUnit_Framework_TestCase
         $applicationPath = 'fooBar';
         $mail->setApplicationPath($applicationPath);
         $this->assertEquals($applicationPath, $mail->getApplicationPath());
+    }
+
+    public function testViewIsUsedWhenProvided()
+    {
+        $mail = $this->getMailObject('index.phtml');
+        $mail->buildMessage(true);
+        $this->assertContains(
+            'index view', quoted_printable_decode($mail->getBodyHtml(true))
+        );
+    }
+
+    public function testTxtViewIsUsedWhenProvided()
+    {
+        $mail = $this->getMailObject('', 'index.txt.phtml');
+        $mail->buildMessage(true);
+        $this->assertContains(
+            'index view in txt format',
+            quoted_printable_decode($mail->getBodyText(true))
+        );
+    }
+
+    public function testMessageIsMultipartWhenTxtAndHtmlViewsAreGiven()
+    {
+        $mail = $this->getMailObject('index.phtml', 'index.txt.phtml');
+        $mail->buildMessage(true);
+        $this->assertTrue(
+            $mail->getBodyHtml(true) && $mail->getBodyText(true),
+            'Message should have both html and txt part'
+        );
+    }
+
+    public function testViewHelpersAreAvailableInTheStandardLocation()
+    {
+        $mail = $this->getMailObject('helper.phtml');
+        $mail->buildMessage(true);
+        $this->assertContains(
+            'view helper',
+            quoted_printable_decode($mail->getBodyHtml(true))
+        );
+    }
+
+    public function testVariablesAreAssignedToTheView()
+    {
+        $mail = $this->getMailObject('index.phtml');
+        $value = uniqid();
+        $mail->view->variable = $value;
+        $mail->buildMessage(true);
+        $this->assertContains(
+            $value, quoted_printable_decode($mail->getBodyHtml(true)),
+            'Mail body should contain actual value of variable'
+        );
+    }
+
+    /**
+     * Build a mail object
+     *
+     * @param string $htmlView   html view script
+     * @param string $txtView    txt view script
+     * @param string $htmlLayout html layout script
+     * @param string $txtLayout  txt layout script
+     *
+     * @return Zle_Mail_Mvc
+     */
+    protected function getMailObject($htmlView = '', $txtView = '', $htmlLayout = '', $txtLayout = '')
+    {
+        $mail = new Zle_Mail_Mvc();
+        $mail->setApplicationPath(
+        // set the application path to the testApp provided
+            realpath(dirname(__FILE__) . '/_files/mvc')
+        );
+        if ($htmlView) {
+            $mail->setHtmlView($htmlView);
+        }
+        if ($txtView) {
+            $mail->setTxtView($txtView);
+        }
+        if ($htmlLayout) {
+            $mail->setHtmlLayout($htmlLayout);
+        }
+        if ($txtLayout) {
+            $mail->setTxtLayout($txtLayout);
+        }
+        return $mail;
     }
 }

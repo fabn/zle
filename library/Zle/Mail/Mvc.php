@@ -59,6 +59,11 @@ class Zle_Mail_Mvc extends Zend_Mail
     private $_applicationPath;
 
     /**
+     * @var bool
+     */
+    private $_isBodyBuilt = false;
+
+    /**
      * Public constructor
      *
      * @param array  $viewOptions   options given to the view constructor
@@ -202,6 +207,41 @@ class Zle_Mail_Mvc extends Zend_Mail
     }
 
     /**
+     * Build body of message
+     *
+     * @param bool $force if true the body will be overwritten
+     *      if it's already built. Don't make any change if $force is false
+     *      and the body is already generated.
+     *
+     * @return void
+     */
+    public function buildMessage($force = false)
+    {
+        if ($force || !$this->_isBodyBuilt) {
+            // TODO Setup paths for layouts
+            // Setup paths for views
+            $this->view->addScriptPath(
+                $this->getApplicationPath() . '/views/scripts/'
+            );
+            $this->view->addHelperPath(
+                $this->getApplicationPath() . '/views/helpers/'
+            );
+
+            // Build body of message
+            // TODO layout part
+            // handle view part
+            if ($this->getHtmlView()) {
+                $this->setBodyHtml($this->view->render($this->getHtmlView()));
+            }
+            if ($this->getTxtView()) {
+                $this->setBodyText($this->view->render($this->getTxtView()));
+            }
+            // set flag to built
+            $this->_isBodyBuilt = true;
+        }
+    }
+
+    /**
      * Sends this email using the given transport or a previously
      * set DefaultTransport or the internal mail function if no
      * default transport had been set.
@@ -213,6 +253,8 @@ class Zle_Mail_Mvc extends Zend_Mail
     public function send($transport = null)
     {
         // build body using the provided layout and view
+        $this->buildMessage();
+        // call parent method to send
         return parent::send($transport);
     }
 
