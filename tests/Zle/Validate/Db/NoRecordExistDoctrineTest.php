@@ -43,9 +43,11 @@ class NoRecordExistDoctrineTest extends PHPUnit_Framework_TestCase
 
     protected function tearDown()
     {
-        // empty account table
-        Doctrine_Core::getTable('Account')
-                ->createQuery()->delete()->execute();
+        if (class_exists('Doctrine_Core')) {
+            // empty account table
+            Doctrine_Core::getTable('Account')
+                    ->createQuery()->delete()->execute();
+        }
         // unregister doctrine namespace
         $this->classLoader->unregisterNamespace('Doctrine_');
     }
