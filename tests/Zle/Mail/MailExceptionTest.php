@@ -21,7 +21,7 @@
  * @license  http://framework.zend.com/license/new-bsd New BSD License
  * @link     http://framework.zend.com/
  */
-class ExceptionTest extends PHPUnit_Framework_TestCase
+class MailExceptionTest extends PHPUnit_Framework_TestCase
 {
 
     public function testExceptionIsInstantiable()
