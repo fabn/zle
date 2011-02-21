@@ -27,7 +27,8 @@ abstract class Zle_Validate_Db_Abstract extends Zend_Validate_Db_Abstract
     /**
      * Run query and returns matches, or null if no matches are found.
      *
-     * @param  String $value
+     * @param string $value value to query for
+     *
      * @return Array when matches are found.
      */
     protected function _query($value)
@@ -37,7 +38,7 @@ abstract class Zle_Validate_Db_Abstract extends Zend_Validate_Db_Abstract
          */
         $query = Doctrine_Core::getTable($this->getTable())
                 ->createQuery();
-                //->select($this->getField());
+        //->select($this->getField());
         // select the given record
         $query->where(
             $query->getConnection()->quoteIdentifier($this->getField()) . ' = ?',
@@ -46,11 +47,9 @@ abstract class Zle_Validate_Db_Abstract extends Zend_Validate_Db_Abstract
         // check for exclude
         if ($this->_exclude !== null) {
             if (is_array($this->_exclude)) {
-                $query->andWhere(
-                    $query->getConnection()
-                            ->quoteIdentifier($this->_exclude['field']) . ' != ?',
-                    $this->_exclude['value']
-                );
+                $identifier = $query->getConnection()
+                    ->quoteIdentifier($this->_exclude['field']);
+                $query->andWhere("$identifier != ?", $this->_exclude['value']);
             } else {
                 $query->andWhere($this->_exclude);
             }

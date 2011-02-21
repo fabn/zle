@@ -23,6 +23,14 @@
  */
 class Zle_Validate_Db_NoRecordExistDoctrine extends Zle_Validate_Db_Abstract
 {
+
+    /**
+     * Returns true if and only if $value meets the validation requirements
+     *
+     * @param mixed $value the value to be tested
+     *
+     * @return boolean
+     */
     public function isValid($value)
     {
         $valid = true;
