@@ -86,4 +86,23 @@ class MvcTest extends PHPUnit_Framework_TestCase
         $mail->$setter($scriptNameWithSuffix);
         $this->assertEquals($expected, $mail->$getter(), $message);
     }
+
+    public function testApplicationPathMustBeSet()
+    {
+        $mail = new Zle_Mail_Mvc();
+        if (!defined('APPLICATION_PATH')) {
+            try {
+                $mail->getApplicationPath();
+                $this->fail('Expected exception not raised');
+            } catch (Zle_Mail_Exception $e) {
+                $this->assertEquals(
+                    'You must set or define the application path',
+                    $e->getMessage()
+                );
+            }
+        }
+        $applicationPath = 'fooBar';
+        $mail->setApplicationPath($applicationPath);
+        $this->assertEquals($applicationPath, $mail->getApplicationPath());
+    }
 }
