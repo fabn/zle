@@ -218,26 +218,98 @@ class Zle_Mail_Mvc extends Zend_Mail
     public function buildMessage($force = false)
     {
         if ($force || !$this->_isBodyBuilt) {
-            // TODO Setup paths for layouts
-            // Setup paths for views
-            $this->view->addScriptPath(
-                $this->getApplicationPath() . '/views/scripts/'
-            );
-            $this->view->addHelperPath(
-                $this->getApplicationPath() . '/views/helpers/'
-            );
-
-            // Build body of message
-            // TODO layout part
-            // handle view part
-            if ($this->getHtmlView()) {
-                $this->setBodyHtml($this->view->render($this->getHtmlView()));
-            }
-            if ($this->getTxtView()) {
-                $this->setBodyText($this->view->render($this->getTxtView()));
-            }
+            // prepare the view
+            $this->_prepareView();
+            // prepare the layout
+            $this->_prepareLayout();
+            // build the html body
+            $this->_buildHtmlBody();
+            // build the txt body
+            $this->_buildTextBody();
             // set flag to built
             $this->_isBodyBuilt = true;
+        }
+    }
+
+    /**
+     * Build the html part of the email using the provided scripts
+     *
+     * @return void
+     */
+    private function _buildHtmlBody()
+    {
+        $viewContent = '';
+        if ($this->getHtmlView()) {
+            $viewContent = $this->view->render($this->getHtmlView());
+            if (!$this->getHtmlLayout()) {
+                // no layout, render only the view
+                $this->setBodyHtml($viewContent);
+            }
+        }
+        if ($this->getHtmlLayout()) {
+            $this->_layout->setLayout($this->getHtmlLayout());
+            $this->_layout->setView($this->view);
+            // assign rendered view to the layout
+            $this->_layout->assign('content', $viewContent);
+            // render the layout
+            $this->setBodyHtml($this->_layout->render($this->getHtmlLayout()));
+        }
+    }
+
+    /**
+     * Build the txt part of the email using the provided scripts
+     *
+     * @return void
+     */
+    private function _buildTextBody()
+    {
+        $viewContent = '';
+        if ($this->getTxtView()) {
+            $viewContent = $this->view->render($this->getTxtView());
+            if (!$this->getTxtLayout()) {
+                // no layout, render only the view
+                $this->setBodyText($viewContent);
+            }
+        }
+        if ($this->getTxtLayout()) {
+            $this->_layout->setLayout($this->getTxtLayout());
+            $this->_layout->setView($this->view);
+            // assign rendered view to the layout
+            $this->_layout->assign('content', $viewContent);
+            // render the layout
+            $this->setBodyText($this->_layout->render($this->getTxtLayout()));
+        }
+    }
+
+    /**
+     * Prepare layout instance to be used
+     *
+     * @return void
+     */
+    private function _prepareLayout()
+    {
+        // set the view object
+        $this->_layout->setView($this->view);
+        // set the layout path
+        $this->_layout->setLayoutPath(
+            $this->getApplicationPath() . '/layouts/scripts/'
+        );
+    }
+
+    /**
+     * Prepare view to be used
+     *
+     * @return void
+     */
+    private function _prepareView()
+    {
+        $defaultScriptPath = $this->getApplicationPath() . '/views/scripts/';
+        if (!in_array($defaultScriptPath, $this->view->getScriptPaths())) {
+            $this->view->addScriptPath($defaultScriptPath);
+        }
+        $defaultHelperPath = $this->getApplicationPath() . '/views/helpers/';
+        if (!in_array($defaultHelperPath, $this->view->getHelperPaths())) {
+            $this->view->addHelperPath($defaultHelperPath);
         }
     }
 

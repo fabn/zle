@@ -51,7 +51,7 @@ class MvcTest extends PHPUnit_Framework_TestCase
         }
     }
 
-        public function propertyProvider()
+    public function propertyProvider()
     {
         return array(
             array('htmlLayout', false),
@@ -149,12 +149,48 @@ class MvcTest extends PHPUnit_Framework_TestCase
     {
         $mail = $this->getMailObject('index.phtml');
         $value = uniqid();
-        $mail->view->variable = $value;
+        $mail->view->assign('variable', $value);
         $mail->buildMessage(true);
         $this->assertContains(
             $value, quoted_printable_decode($mail->getBodyHtml(true)),
             'Mail body should contain actual value of variable'
         );
+    }
+
+    public function testHtmlLayoutIsUsedWhenProvided()
+    {
+        $mail = $this->getMailObject('', '', 'html');
+        $mail->buildMessage(true);
+        $this->assertContains(
+            'html layout',
+            quoted_printable_decode($mail->getBodyHtml(true))
+        );
+    }
+
+    public function testTxtLayoutIsUsedWhenProvided()
+    {
+        $mail = $this->getMailObject('', '', '', 'txt');
+        $mail->buildMessage(true);
+        $this->assertContains(
+            'txt layout',
+            quoted_printable_decode($mail->getBodyText(true))
+        );
+    }
+
+    public function testFullHtmlEmail() {
+        $mail = $this->getMailObject('index', '', 'html');
+        $mail->buildMessage(true);
+        $htmlBody = quoted_printable_decode($mail->getBodyHtml(true));
+        $this->assertContains('html layout', $htmlBody);
+        $this->assertContains('index view', $htmlBody);
+    }
+
+    public function testFullTextEmail() {
+        $mail = $this->getMailObject('', 'index.txt', '', 'txt');
+        $mail->buildMessage(true);
+        $textBody = quoted_printable_decode($mail->getBodyText(true));
+        $this->assertContains('txt layout', $textBody);
+        $this->assertContains('index view', $textBody);
     }
 
     /**
