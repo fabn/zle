@@ -177,7 +177,8 @@ class MvcTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testFullHtmlEmail() {
+    public function testFullHtmlEmail()
+    {
         $mail = $this->getMailObject('index', '', 'html');
         $mail->buildMessage(true);
         $htmlBody = quoted_printable_decode($mail->getBodyHtml(true));
@@ -185,12 +186,24 @@ class MvcTest extends PHPUnit_Framework_TestCase
         $this->assertContains('index view', $htmlBody);
     }
 
-    public function testFullTextEmail() {
+    public function testFullTextEmail()
+    {
         $mail = $this->getMailObject('', 'index.txt', '', 'txt');
         $mail->buildMessage(true);
         $textBody = quoted_printable_decode($mail->getBodyText(true));
         $this->assertContains('txt layout', $textBody);
         $this->assertContains('index view', $textBody);
+    }
+
+    public function testViewVariablesWorkingWithLayoutOnly()
+    {
+        $mail = $this->getMailObject('', '', 'varAndHelper', '');
+        $value = uniqid();
+        $mail->view->assign('variable', $value);
+        $mail->buildMessage(true);
+        $htmlBody = quoted_printable_decode($mail->getBodyHtml(true));
+        $this->assertContains($value, $htmlBody);
+        $this->assertContains('view helper', $htmlBody);
     }
 
     /**
