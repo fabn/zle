@@ -21,7 +21,7 @@
  * @license  http://framework.zend.com/license/new-bsd New BSD License
  * @link     http://framework.zend.com/
  */
-class Zle_View_Helper_Googlemaps extends Zend_View_Helper_Abstract
+class Zle_View_Helper_GoogleMaps extends Zend_View_Helper_Abstract
 {
     /**
      * Google maps url
