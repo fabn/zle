@@ -29,9 +29,21 @@ class Zle_Form_Element_DatePicker extends Zend_Form_Element_Text
      */
     public $helper = 'formDatePicker';
 
+    /**
+     * @var array datePicker options
+     */
     public $options = array();
 
-    public function setDatePickerOptions(array $options = array()) {
+    /**
+     * Options setter, called direct or using constructor by giving
+     * a datePickerOptions key in the config
+     *
+     * @param array $options specific options for this instance of datePicker
+     *
+     * @return void
+     */
+    public function setDatePickerOptions(array $options = array())
+    {
         $this->options = $options;
     }
 }

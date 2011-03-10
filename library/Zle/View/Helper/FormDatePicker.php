@@ -39,7 +39,7 @@ class Zle_View_Helper_FormDatePicker extends Zend_View_Helper_FormText
      */
     protected static $datePickerDefaultOptions = array(
         'showOn' => 'both',
-        'dateFormat' => 'yyyy-mm-dd',
+        'dateFormat' => 'yy-mm-dd',
     );
 
     /**
@@ -86,7 +86,8 @@ class Zle_View_Helper_FormDatePicker extends Zend_View_Helper_FormText
      * array, all other parameters are ignored, and the array elements
      * are used in place of added parameters.
      * @param mixed        $value   The element value.
-     * @param array        $attribs Attributes for the element tag.
+     * @param array        $attribs Attributes for the element tag
+     * @param array        $options Options for this instance of the datePicker
      *
      * @return string The element XHTML.
      */
@@ -94,12 +95,22 @@ class Zle_View_Helper_FormDatePicker extends Zend_View_Helper_FormText
     {
         // load jquery environment
         $this->loadJQuery();
-        // TODO add support for custom options, use the 4th parameter of the helper
+        // add instance option to element
         if (!empty($options)) {
-            $js = sprintf("$('#%s').datepicker('option', %s);",
-                    $attribs['id'], Zend_Json::encode($options)
+            $js = sprintf(
+                "$('#%s').datepicker('option', %s);",
+                $attribs['id'], Zend_Json::encode($options)
             );
             $this->view->jQuery()->addOnLoad($js);
+        }
+        // class handling
+        if (isset($attribs['class'])) {
+            if (is_string($attribs['class'])) {
+                $attribs['class'] = array($attribs['class']);
+            }
+            $attribs['class'][] = self::DATE_PICKER_CLASS;
+        } else {
+            $attribs['class'] = self::DATE_PICKER_CLASS;
         }
         // return a text element
         return parent::formText($name, $value, $attribs);
