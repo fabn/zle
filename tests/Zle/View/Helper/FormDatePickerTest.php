@@ -33,17 +33,25 @@ class FormDatePickerTest extends PHPUnit_Framework_TestCase
      */
     private $_view;
 
+    /**
+     * @var array
+     */
+    private $_helperOptions;
+
     protected function setUp()
     {
         $this->_helper = new Zle_View_Helper_FormDatePicker();
         $this->_helper->setView($this->_view = new Zend_View());
         ZendX_JQuery::enableView($this->_helper->view);
+        $this->_helperOptions = Zle_View_Helper_FormDatePicker::getDatePickerDefaultOptions();
     }
 
     protected function tearDown()
     {
         // clear registry for locale testing
         Zend_Registry::_unsetInstance();
+        // restore default options value
+        Zle_View_Helper_FormDatePicker::setDatePickerDefaultOptions($this->_helperOptions);
     }
 
     public function testJQueryIsEnabledAfterCall()
@@ -140,4 +148,15 @@ class FormDatePickerTest extends PHPUnit_Framework_TestCase
             $this->_helper->formDatePicker('calendar', null, array('class' => 'fooClass'))
         );
     }
+
+    public function testDefaultOptionsCanBeChanged()
+    {
+        $newOptions = array('foo' => 'bar');
+        Zle_View_Helper_FormDatePicker::setDatePickerDefaultOptions($newOptions);
+        $this->assertSame(
+            $newOptions,
+            Zle_View_Helper_FormDatePicker::getDatePickerDefaultOptions()
+        );
+    }
+
 }

@@ -60,8 +60,8 @@ class Zle_View_Helper_FormDatePicker extends Zend_View_Helper_FormText
                 $locale = Zend_Registry::get('Zend_Locale');
                 // load datePicker localization
                 $jq->addJavascriptFile(
-                    Zle_View_Helper_JQueryPathBuilder::getInstance()->
-                    getDatePickerLocaleJavascriptFile($locale, $jq)
+                    Zle_View_Helper_JQueryPathBuilder::getInstance()
+                    ->getDatePickerLocaleJavascriptFile($locale, $jq)
                 );
             }
             // set default options
@@ -114,5 +114,27 @@ class Zle_View_Helper_FormDatePicker extends Zend_View_Helper_FormText
         }
         // return a text element
         return parent::formText($name, $value, $attribs);
+    }
+
+    /**
+     * Default options setter
+     *
+     * @param array $datePickerDefaultOptions new set of options
+     *
+     * @return void
+     */
+    public static function setDatePickerDefaultOptions($datePickerDefaultOptions)
+    {
+        self::$datePickerDefaultOptions = $datePickerDefaultOptions;
+    }
+
+    /**
+     * Default options getter
+     *
+     * @return array
+     */
+    public static function getDatePickerDefaultOptions()
+    {
+        return self::$datePickerDefaultOptions;
     }
 }
