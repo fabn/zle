@@ -90,11 +90,17 @@ class Zle_View_Helper_FormDatePicker extends Zend_View_Helper_FormText
      *
      * @return string The element XHTML.
      */
-    public function formDatePicker($name, $value = null, $attribs = null)
+    public function formDatePicker($name, $value = null, $attribs = null, $options = array())
     {
         // load jquery environment
         $this->loadJQuery();
         // TODO add support for custom options, use the 4th parameter of the helper
+        if (!empty($options)) {
+            $js = sprintf("$('#%s').datepicker('option', %s);",
+                    $attribs['id'], Zend_Json::encode($options)
+            );
+            $this->view->jQuery()->addOnLoad($js);
+        }
         // return a text element
         return parent::formText($name, $value, $attribs);
     }
