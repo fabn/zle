@@ -113,7 +113,8 @@ class FormDatePickerTest extends PHPUnit_Framework_TestCase
         );
     }
 
-    public function testDatePickerInitializationIsDone() {
+    public function testDatePickerInitializationIsDone()
+    {
         $this->_helper->formDatePicker('calendar');
         /** @var $jq ZendX_JQuery_View_Helper_JQuery_Container */
         $jq = $this->_helper->view->jQuery();
@@ -122,6 +123,21 @@ class FormDatePickerTest extends PHPUnit_Framework_TestCase
             implode('', $jq->getOnLoadActions()), // concatenate onLoad actions
             'DatePicker should be initialized'
         );
-        Zend_Debug::dump($this->_helper->formDatePicker('calendar'));
+    }
+
+    public function testDatePickerClassShouldBeSet()
+    {
+        $this->assertContains(
+            sprintf('class="%s"', Zle_View_Helper_FormDatePicker::DATE_PICKER_CLASS),
+            $this->_helper->formDatePicker('calendar')
+        );
+    }
+
+    public function testDatePickerClassShouldBeAdded()
+    {
+        $this->assertRegExp(
+            sprintf('/class=".*%s.*"/', Zle_View_Helper_FormDatePicker::DATE_PICKER_CLASS),
+            $this->_helper->formDatePicker('calendar', null, array('class' => 'fooClass'))
+        );
     }
 }

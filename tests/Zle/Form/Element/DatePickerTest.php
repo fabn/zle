@@ -109,6 +109,23 @@ class DatePickerTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    public function testDatePickerClassShouldBeSet()
+    {
+        $this->assertContains(
+            sprintf('class="%s"', Zle_View_Helper_FormDatePicker::DATE_PICKER_CLASS),
+            $this->_picker->render($this->_view)
+        );
+    }
+
+    public function testDatePickerClassShouldBeAddedToTheElement()
+    {
+        $this->_picker->setAttrib('class', array('foo', 'bar'));
+        $this->assertRegExp(
+            sprintf('/class=".*%s.*"/', Zle_View_Helper_FormDatePicker::DATE_PICKER_CLASS),
+            $this->_picker->render($this->_view)
+        );
+    }
+
     /**
      * Ensure $option option is set
      *
@@ -118,7 +135,8 @@ class DatePickerTest extends PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    protected function assertOptionIsSet($option, $value, $picker = null) {
+    protected function assertOptionIsSet($option, $value, $picker = null)
+    {
         if ($picker == null) {
             $picker = $this->_picker;
         }
@@ -134,7 +152,8 @@ class DatePickerTest extends PHPUnit_Framework_TestCase
      *
      * @return void
      */
-    protected function assertAttributeIsNotSet($option, $picker = null) {
+    protected function assertAttributeIsNotSet($option, $picker = null)
+    {
         if ($picker == null) {
             $picker = $this->_picker;
         }
