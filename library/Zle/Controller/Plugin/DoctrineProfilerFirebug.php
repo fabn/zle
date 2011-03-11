@@ -104,12 +104,12 @@ class Zle_Controller_Plugin_DoctrineProfilerFirebug
     public function recordEvent($event)
     {
         $this->message->setDestroy(false);
-
+        // update time counter
         $this->totalElapsedTime += $event->getElapsedSecs();
-
+        // add a row to the table
         $this->message->addRow(
             array((string)round($event->getElapsedSecs(), 5),
-                 $event->getQuery(),
+                 $event->getQuery() ? $event->getQuery() : $event->getName(),
                  ($params = $event->getParams()) ? $params : null)
         );
         // increment number of queries

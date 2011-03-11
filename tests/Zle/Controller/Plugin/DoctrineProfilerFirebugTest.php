@@ -48,25 +48,17 @@ class DoctrineProfilerFirebugTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('Doctrine 1.2.x installation not found in include_path');
         }
         // create in memory connection
-        $connection = Doctrine_Manager::connection("sqlite::memory:", 'doctrine');
+        Doctrine_Manager::connection("sqlite::memory:", 'doctrine');
         // instantiate plugin
         $this->_plugin = new Zle_Controller_Plugin_DoctrineProfilerFirebug();
-        // store pdo as instance variable
-        $this->_db = $connection->getDbh();
-        // create a table
-        $tableSql = <<<SQL
-CREATE TABLE foo (
-    id INTEGER NOT NULL,
-    col1 VARCHAR(10) NOT NULL
-)
-SQL;
-        $this->_db->exec($tableSql);
+        // create tables for account model
+        Doctrine_Core::createTablesFromModels(dirname(__FILE__) . "/_files/models/");
     }
 
     public function tearDown()
     {
         if (extension_loaded('pdo_sqlite') && class_exists('Doctrine_Core')) {
-            Doctrine_Manager::connection()->getDbh()->exec('DROP TABLE foo');
+            Doctrine_Manager::connection()->getDbh()->exec('DROP TABLE accounts');
         }
         // unregister doctrine namespace
         Zend_Loader_Autoloader::getInstance()->unregisterNamespace('Doctrine_');
@@ -79,19 +71,19 @@ SQL;
         $channel = Zend_Wildfire_Channel_HttpHeaders::getInstance();
         $protocol = $channel->getProtocol(Zend_Wildfire_Plugin_FirePhp::PROTOCOL_URI);
 
-        $this->_db->exec("INSERT INTO foo VALUES(1, 'original')");
-        // record profiler data
+        Doctrine_Query::create()->from('Account')->execute();
+        // call plugin postDispatch to record profiler data
         $this->_plugin->dispatchLoopShutdown();
 
         Zend_Wildfire_Channel_HttpHeaders::getInstance()->flush();
 
         $messages = $protocol->getMessages();
 
-        $this->assertEquals(
-            substr($messages
-                   [Zend_Wildfire_Plugin_FirePhp::STRUCTURE_URI_FIREBUGCONSOLE]
-                   [Zend_Wildfire_Plugin_FirePhp::PLUGIN_URI][0], 0, 54),
-            '[{"Type":"TABLE","Label":"Zle_Db_Profiler_Firebug (1 @'
+        $this->assertStringStartsWith(
+            '[{"Type":"TABLE","Label":"Zle_Db_Profiler_Firebug (',
+            $messages
+            [Zend_Wildfire_Plugin_FirePhp::STRUCTURE_URI_FIREBUGCONSOLE]
+            [Zend_Wildfire_Plugin_FirePhp::PLUGIN_URI][0]
         );
     }
 
@@ -101,6 +93,9 @@ SQL;
         $protocol = $channel->getProtocol(Zend_Wildfire_Plugin_FirePhp::PROTOCOL_URI);
 
         Zend_Wildfire_Channel_HttpHeaders::getInstance()->flush();
+
+        // call plugin postDispatch to record profiler data
+        $this->_plugin->dispatchLoopShutdown();
 
         $messages = $protocol->getMessages();
 
