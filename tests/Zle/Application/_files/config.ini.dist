@@ -1,0 +1,25 @@
+[production]
+
+; php parametrs
+phpSettings.display_startup_errors = 1
+phpSettings.display_errors = 1
+phpSettings.error_reporting = E_ALL | E_STRICT
+phpSettings.memory_limit = "32M"
+
+; autoloader stuff
+appnamespace = "Zle"
+autoloadernamespaces[] = "Zle_"
+; load application resources from zle
+pluginPaths.Zle_Application_Resource = "Zle/Application/Resource"
+
+; initialize module autoloaders
+resources.modules[] =
+
+; front controller section
+resources.frontController.controllerDirectory = APPLICATION_PATH "/controllers"
+resources.frontController.moduleDirectory = APPLICATION_PATH "/modules/"
+resources.frontController.defaultmodule = "default"
+resources.frontController.throwexceptions = false
+
+[testing : production]
+phpSettings.memory_limit = "512M"
