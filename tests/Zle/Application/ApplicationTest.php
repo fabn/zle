@@ -104,4 +104,18 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
     {
         new Zle_Application('testing', 'foo');
     }
+
+    public function testConfigIsReloadedWhenNewValuesAreAdded()
+    {
+        $key = 'bar';
+        $app = new Zle_Application('testing', $this->getConfigFile());
+        $old = $app->getOption($key);
+        $random = uniqid();
+        clearstatcache();
+        sleep(1);
+        system("echo 'bar={$random}' >> {$this->getConfigFile()}");
+        $app = new Zle_Application('testing', $this->getConfigFile());
+        $this->assertEquals($random, $app->getOption($key));
+        $this->assertNotEquals($old, $app->getOption($key));
+    }
 }
