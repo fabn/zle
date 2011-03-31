@@ -114,7 +114,7 @@ class GoogleMapsTest extends PHPUnit_Framework_TestCase
 
     public function testHelperIsEchoable()
     {
-        $this->assertType('string', (string)$this->_helper);
+        $this->assertInternalType('string', (string)$this->_helper);
     }
 
     public function testHeightSetter()

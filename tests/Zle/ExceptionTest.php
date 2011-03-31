@@ -26,6 +26,6 @@ class ExceptionTest extends PHPUnit_Framework_TestCase
     public function testIsInstantiable()
     {
         $this->assertTrue(class_exists('Zle_Exception'));
-        $this->assertType('Zle_Exception', new Zle_Exception());
+        $this->assertInstanceOf('Zle_Exception', new Zle_Exception());
     }
 }

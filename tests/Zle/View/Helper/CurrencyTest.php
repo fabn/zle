@@ -59,7 +59,7 @@ class CurrencyTest extends PHPUnit_Framework_TestCase
         $calculated = $this->_helper->currency(
             $value, array(), self::DEFAULT_LOCALE
         );
-        $this->assertType('string', $calculated, 'Helper should return a string');
+        $this->assertInternalType('string', $calculated, 'Helper should return a string');
         $this->assertEquals(
             '$5.10', $calculated,
             'Helper should build a localized italian string'

@@ -108,7 +108,7 @@ abstract class Zle_Test_NavigationTest extends PHPUnit_Framework_TestCase
             );
         }
         if ($parentLabel) {
-            $this->assertType(
+            $this->assertInstanceOf(
                 'Zend_Navigation_Page', $page->getParent(),
                 "Parent page should be a page instance"
             );

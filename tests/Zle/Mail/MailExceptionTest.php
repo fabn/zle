@@ -26,11 +26,11 @@ class MailExceptionTest extends PHPUnit_Framework_TestCase
 
     public function testExceptionIsInstantiable()
     {
-        $this->assertType('Zle_Mail_Exception', new Zle_Mail_Exception());
+        $this->assertInstanceOf('Zle_Mail_Exception', new Zle_Mail_Exception());
     }
 
     public function testMailExceptionIsAnException()
     {
-        $this->assertType('Exception', new Zle_Mail_Exception());
+        $this->assertInstanceOf('Exception', new Zle_Mail_Exception());
     }
 }

@@ -15,7 +15,8 @@ the `application.ini` file in your zf app by including this line
         resources.view.helperPath.Zle_View_Helper = "Zle/View/Helper" # view helpers
 
 ## Language Support
-* PHP >= 5.2 (in the near future this requirement will be upgraded to 5.3)
+* PHP >= 5.3
+* PHPUnit >= 3.5
 
 ## Limitations
 * The code relies on the autoloading functionality of ZF (or any other PEAR compliant autoloader),
