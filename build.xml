@@ -26,7 +26,7 @@
         <parallel>
             <antcall target="pdepend"/>
             <antcall target="phpmd"/>
-            <!--<antcall target="phpcpd"/>-->
+            <antcall target="phpcpd"/>
             <antcall target="phpcs"/>
             <antcall target="phpdoc"/>
         </parallel>
@@ -87,5 +87,5 @@
         </exec>
     </target>
 
-    <target name="build" depends="clean,parallelTasks,phpunit"/>
+    <target name="build" depends="clean,parallelTasks,phpunit,phpcb"/>
 </project>
