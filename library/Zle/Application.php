@@ -88,6 +88,7 @@ class Zle_Application extends Zend_Application
         if (($config = $cache->load(self::CONFIG_ARRAY_KEY))) {
             return $config;
         }
+        return false;
     }
 
     /**

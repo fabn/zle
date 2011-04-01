@@ -118,4 +118,27 @@ class ApplicationTest extends PHPUnit_Framework_TestCase
         $this->assertEquals($random, $app->getOption($key));
         $this->assertNotEquals($old, $app->getOption($key));
     }
+
+    public function testConfigIsCachedAcrossInstances()
+    {
+        $key = 'bar';
+        $app = new Zle_Application('testing', $this->getConfigFile());
+        $old = $app->getOption($key);
+        $app = new Zle_Application('testing', $this->getConfigFile());
+        $this->assertEquals($old, $app->getOption($key));
+    }
+
+    public function testConfigIsReloadedWhenCacheFails()
+    {
+        $key = 'bar';
+        $app = new Zle_Application('testing', $this->getConfigFile());
+        $old = $app->getOption($key);
+        $cache = Zend_Cache::factory(
+            'Core', 'Apc',
+            array('automatic_serialization' => true)
+        );
+        $cache->remove(Zle_Application::CONFIG_ARRAY_KEY);
+        $app = new Zle_Application('testing', $this->getConfigFile());
+        $this->assertEquals($old, $app->getOption($key));
+    }
 }
