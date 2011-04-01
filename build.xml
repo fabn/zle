@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <project name="Zend Library Extension" default="build" basedir=".">
     <target name="clean">
         <!-- Clean up -->
@@ -22,25 +24,33 @@
     </target>
 
     <!-- Run pdepend, phpmd, phpcpd, and phpcs in parallel -->
-    <target name="parallelTasks">
-        <parallel>
-            <antcall target="pdepend"/>
-            <antcall target="phpmd"/>
+    <target name="parallelTasks"
+            description="Run the pdepend, phpmd, phpcpd, phpcs, phpdoc and phploc tasks in parallel using a maximum of 2 threads.">
+        <parallel threadCount="2">
+            <sequential>
+                <antcall target="pdepend"/>
+                <antcall target="phpmd"/>
+            </sequential>
             <antcall target="phpcpd"/>
             <antcall target="phpcs"/>
             <antcall target="phpdoc"/>
+            <antcall target="phploc"/>
         </parallel>
     </target>
 
     <!-- Generate jdepend.xml and software metrics charts -->
-    <target name="pdepend">
+    <target name="pdepend"
+            description="Generate jdepend.xml and software metrics charts using PHP_Depend">
         <exec executable="pdepend">
-            <arg line="--jdepend-xml=${basedir}/build/logs/jdepend.xml --suffix=php library"/>
+            <arg line="--jdepend-xml=${basedir}/build/logs/jdepend.xml
+            --jdepend-chart=${basedir}/build/pdepend/dependencies.svg
+            --overview-pyramid=${basedir}/build/pdepend/overview-pyramid.svg
+            --suffix=php library"/>
         </exec>
     </target>
 
     <!-- Generate pmd.xml -->
-    <target name="phpmd">
+    <target name="phpmd" description="Generate pmd.xml using PHPMD">
         <exec executable="phpmd">
             <arg line="
               library
@@ -51,12 +61,18 @@
     </target>
 
     <!-- Generate pmd-cpd.xml -->
-    <target name="phpcpd">
+    <target name="phpcpd" description="Generate pmd-cpd.xml using PHPCPD">
         <exec executable="phpcpd">
             <arg line="
                 --log-pmd ${basedir}/build/logs/pmd-cpd.xml
                 --suffixes php
                 library"/>
+        </exec>
+    </target>
+
+    <target name="phploc" description="Generate phploc.csv">
+        <exec executable="phploc">
+            <arg line="--log-csv ${basedir}/build/logs/phploc.csv library"/>
         </exec>
     </target>
 
@@ -78,12 +94,12 @@
         </exec>
     </target>
 
-    <target name="phpcb">
+    <target name="phpcb"  description="Aggregate tool output with PHP_CodeBrowser">
         <exec executable="phpcb">
             <arg line="
-              --log=${basedir}/build/logs
-              --source=${basedir}/library
-              --output=${basedir}/build/code-browser"/>
+              --log    ${basedir}/build/logs
+              --source ${basedir}/library
+              --output ${basedir}/build/code-browser"/>
         </exec>
     </target>
 
