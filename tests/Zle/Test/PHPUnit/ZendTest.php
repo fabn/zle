@@ -25,7 +25,7 @@ class ZendTest extends PHPUnit_Framework_TestCase
 {
     public function testAdapterCanBeChangedUsingSetter()
     {
-        $a = new Zend_Db_Adapter_Pdo_Sqlite(array('dbname' => tmpfile()));
+        $a = new Zend_Db_Adapter_Pdo_Sqlite(array('dbname' => ":memory:"));
         $t = new EmptyZendDbTest();
         $t->setAdapter($a);
         $this->assertEquals($a, $t->getAdapter(), 'Adapter should be changed');
@@ -34,7 +34,7 @@ class ZendTest extends PHPUnit_Framework_TestCase
     public function testUnitTestIsInstantiable()
     {
         Zend_Db_Table_Abstract::setDefaultAdapter(
-            new Zend_Db_Adapter_Pdo_Sqlite(array('dbname' => tmpfile()))
+            new Zend_Db_Adapter_Pdo_Sqlite(array('dbname' => ":memory:"))
         );
         $suite = new PHPUnit_Framework_TestSuite();
         $suite->addTestSuite('EmptyZendDbTest');
@@ -46,9 +46,9 @@ class ZendTest extends PHPUnit_Framework_TestCase
     public function testUnitTestLoadFixtures()
     {
         Zend_Db_Table_Abstract::setDefaultAdapter(
-            $db = new Zend_Db_Adapter_Pdo_Sqlite(array('dbname' => tmpfile()))
+            $db = new Zend_Db_Adapter_Pdo_Sqlite(array('dbname' => ":memory:"))
         );
-        $db->getConnection()->exec('DROP TABLE IF EXISTS `table`; CREATE TABLE `table` (`user` VARCHAR, `login` VARCHAR);');
+        $db->getConnection()->exec('DROP TABLE IF EXISTS `foo`; CREATE TABLE `foo` (`a` VARCHAR, `b` VARCHAR);');
         $suite = new PHPUnit_Framework_TestSuite();
         $suite->addTestSuite('NotEmptyZendDbTest');
         $suite->run($result = new PHPUnit_Framework_TestResult());
@@ -56,7 +56,6 @@ class ZendTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($result->wasSuccessful());
     }
 }
-
 
 class EmptyZendDbTest extends Zle_Test_PHPUnit_Database_Zend
 {
@@ -73,7 +72,7 @@ class NotEmptyZendDbTest extends Zle_Test_PHPUnit_Database_Zend
     public function testTwoRowsAreCreatedByFixtures()
     {
         $db = Zend_Db_Table_Abstract::getDefaultAdapter();
-        $result = $db->fetchAll('SELECT * FROM `table`');
+        $result = $db->fetchAll('SELECT * FROM `foo`');
         $this->assertEquals(2, count($result));
     }
 
