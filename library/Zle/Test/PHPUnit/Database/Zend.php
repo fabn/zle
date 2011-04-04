@@ -24,6 +24,10 @@
 abstract class Zle_Test_PHPUnit_Database_Zend
     extends Zle_Test_PHPUnit_Database_TestCase
 {
+    /**
+     * @var Zend_Db_Adapter_Abstract
+     */
+    private $_adapter;
 
     /**
      * Return the connection provided by Zend_Db default adapter
@@ -34,9 +38,34 @@ abstract class Zle_Test_PHPUnit_Database_Zend
      */
     protected function getConnection()
     {
-        $defaultAdapter = Zend_Db_Table_Abstract::getDefaultAdapter();
-        return $this->createZendDbConnection(
-            $defaultAdapter, $this->schemaName
+        return new Zend_Test_PHPUnit_Db_Connection(
+            $this->getAdapter(), $this->schemaName
         );
+    }
+
+    /**
+     * Set the adapter to use for testing
+     *
+     * @param Zend_Db_Adapter_Abstract $adapter the adapter to use in tests
+     *
+     * @return void
+     */
+    public function setAdapter($adapter)
+    {
+        $this->_adapter = $adapter;
+    }
+
+    /**
+     * Adapter getter, returns Zend_Db_Table_Abstract::getDefaultAdapter()
+     * if none provided using setter or overloading the method
+     *
+     * @return Zend_Db_Adapter_Abstract
+     */
+    public function getAdapter()
+    {
+        if (!$this->_adapter) {
+            return Zend_Db_Table_Abstract::getDefaultAdapter();
+        }
+        return $this->_adapter;
     }
 }

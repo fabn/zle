@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+    <table name="table">
+        <column>user</column>
+        <column>login</column>
+        <row>
+            <value>root</value>
+            <value>root</value>
+        </row>
+        <row>
+            <value>foo</value>
+            <value>bar</value>
+        </row>
+    </table>
+</dataset>
