@@ -40,7 +40,7 @@ class ZendTest extends PHPUnit_Framework_TestCase
         $suite->addTestSuite('EmptyZendDbTest');
         $suite->run($result = new PHPUnit_Framework_TestResult());
         $this->assertEquals(1, $result->count());
-        $this->assertTrue($result->wasSuccessful());
+        $this->assertTestsAreSuccessful($result);
     }
 
     public function testUnitTestLoadFixtures()
@@ -53,7 +53,20 @@ class ZendTest extends PHPUnit_Framework_TestCase
         $suite->addTestSuite('NotEmptyZendDbTest');
         $suite->run($result = new PHPUnit_Framework_TestResult());
         $this->assertEquals(1, $result->count());
-        $this->assertTrue($result->wasSuccessful());
+        $this->assertTestsAreSuccessful($result);
+    }
+
+    protected function assertTestsAreSuccessful(PHPUnit_Framework_TestResult $result)
+    {
+        if ($result->wasSuccessful()) {
+            return;
+        }
+        $msg = "Test should pass, instead there are {$result->errorCount()} errors:\n";
+        /** @var $error PHPUnit_Framework_TestFailure */
+        foreach ($result->errors() as $error) {
+            $msg .= $error->exceptionMessage();
+        }
+        $this->fail($msg);
     }
 }
 

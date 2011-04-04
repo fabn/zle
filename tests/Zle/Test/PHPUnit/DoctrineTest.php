@@ -56,18 +56,31 @@ class DoctrineTest extends PHPUnit_Framework_TestCase
         $suite->addTestSuite('EmptyDoctrineDbTest');
         $suite->run($result = new PHPUnit_Framework_TestResult());
         $this->assertEquals(1, $result->count());
-        $this->assertTrue($result->wasSuccessful());
+        $this->assertTestsAreSuccessful($result);
     }
 
     public function testUnitTestLoadFixtures()
     {
         $db = Doctrine_Manager::connection();
-        $db->exec('DROP TABLE IF EXISTS `table`; CREATE TABLE `table` (`user` VARCHAR, `login` VARCHAR);');
+        $db->exec('DROP TABLE IF EXISTS `foo`; CREATE TABLE `foo` (`a` VARCHAR, `b` VARCHAR);');
         $suite = new PHPUnit_Framework_TestSuite();
         $suite->addTestSuite('NotEmptyDoctrineDbTest');
         $suite->run($result = new PHPUnit_Framework_TestResult());
         $this->assertEquals(1, $result->count());
-        $this->assertTrue($result->wasSuccessful());
+        $this->assertTestsAreSuccessful($result);
+    }
+
+    protected function assertTestsAreSuccessful(PHPUnit_Framework_TestResult $result)
+    {
+        if ($result->wasSuccessful()) {
+            return;
+        }
+        $msg = "Test should pass, instead there are {$result->errorCount()} errors:\n";
+        /** @var $error PHPUnit_Framework_TestFailure */
+        foreach ($result->errors() as $error) {
+            $msg .= $error->exceptionMessage();
+        }
+        $this->fail($msg);
     }
 }
 
@@ -87,7 +100,7 @@ class NotEmptyDoctrineDbTest extends Zle_Test_PHPUnit_Database_Doctrine
     public function testTwoRowsAreCreatedByFixtures()
     {
         $db = Doctrine_Manager::connection();
-        $result = $db->fetchAll('SELECT * FROM `table`');
+        $result = $db->fetchAll('SELECT * FROM `foo`');
         $this->assertEquals(2, count($result));
     }
 
