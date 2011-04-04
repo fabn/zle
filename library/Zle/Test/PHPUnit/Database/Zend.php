@@ -68,4 +68,26 @@ abstract class Zle_Test_PHPUnit_Database_Zend
         }
         return $this->_adapter;
     }
+
+    /**
+     * Change the default one until ZF-10483 is fixed
+     *
+     * @link http://framework.zend.com/issues/browse/ZF-10483
+     *
+     * @return PHPUnit_Extensions_Database_Operation_DatabaseOperation
+     */
+    protected function getSetUpOperation()
+    {
+        return new Zend_Test_PHPUnit_Db_Operation_Insert();
+    }
+
+    /**
+     * Truncate the database after tests
+     *
+     * @return PHPUnit_Extensions_Database_Operation_DatabaseOperation
+     */
+    protected function getTearDownOperation()
+    {
+        return new Zend_Test_PHPUnit_Db_Operation_Truncate();
+    }
 }
