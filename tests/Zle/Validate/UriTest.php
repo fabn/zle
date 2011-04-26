@@ -23,12 +23,13 @@
  */
 class UriTest extends PHPUnit_Framework_TestCase
 {
-    public function dataProvider() {
+    public function dataProvider()
+    {
         $data = array();
         $data[] = array('http://www.example.com', true);
         $data[] = array('http://www.example.com/path', true);
         $data[] = array('http://www.example.com/path.html', true);
-        $data[] = array('http://www.example.', false);
+        $data[] = array('http://www.example.', true);
         $data[] = array('http://www..com', false);
         $data[] = array('', false);
         $data[] = array(324, false);
@@ -41,12 +42,15 @@ class UriTest extends PHPUnit_Framework_TestCase
      * @dataProvider dataProvider
      * @param string  $value value to test
      * @param boolean $expected expected result
-     * 
+     *
      * @return void
      */
     public function testUriValues($value, $expected)
     {
         $validator = new Zle_Validate_Uri();
-        $this->assertEquals($expected, $validator->isValid($value));
+        $this->assertEquals(
+            $expected, $validator->isValid($value),
+            sprintf("$value %s be a valid url", $expected ? 'should' : 'should not')
+        );
     }
 }
