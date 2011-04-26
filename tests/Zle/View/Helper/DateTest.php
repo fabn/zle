@@ -77,4 +77,25 @@ class DateTest extends PHPUnit_Framework_TestCase
             'Date should be given using the short format'
         );
     }
+
+    public function testHelperUsesDbFormatIfNotGiven()
+    {
+        $dbDate = '2010-03-02';
+        $this->assertEquals(
+            '03', $this->_helper->date($dbDate, Zend_Date::MONTH),
+            "Helper should recognize a date in database format by default"
+        );
+    }
+
+    public function testHelperThrowsIfNonStringIsGiven()
+    {
+        try {
+            $this->_helper->date(array());
+            $this->fail("Expected exception not raised");
+        } catch (InvalidArgumentException $e) {
+            $this->assertEquals(
+                "Input date must be string or Zend_Date", $e->getMessage()
+            );
+        }
+    }
 }

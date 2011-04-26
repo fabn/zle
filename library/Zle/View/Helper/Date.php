@@ -36,10 +36,19 @@ class Zle_View_Helper_Date extends Zend_View_Helper_Abstract
      */
     public function date($date, $outputFormat = Zend_Date::DATE_LONG, $inputFormat = null)
     {
-        $zdate = $date instanceof Zend_Date
-                ? $date
-                : new Zend_Date((string)$date, $inputFormat);
-        // return formatted date as a string
-        return $zdate->get($outputFormat);
+        if (!($date instanceof Zend_Date)) {
+            // check for string type
+            if (!is_string($date)) {
+                throw new InvalidArgumentException("Input date must be string or Zend_Date");
+            }
+            if (null == $inputFormat && Zend_Date::isDate($date, 'YYYY-mm-dd')) {
+                // use database input format if is matched
+                $inputFormat = Zend_Date::ISO_8601;
+            }
+            // build a zend date object
+            $date = new Zend_Date($date, $inputFormat);
+        }
+        // return converted date
+        return $date->get($outputFormat);
     }
 }
