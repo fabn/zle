@@ -23,7 +23,9 @@ class WidgetTest extends PHPUnit_Framework_TestCase
         return array(
             array('partial', 'foo.phtml'),
             array('view', new Zend_View()),
-            array('model', 'model'),
+            array('model', array()),
+            array('title', 'fooBar'),
+            array('order', 12),
         );
     }
 
@@ -64,6 +66,37 @@ class WidgetTest extends PHPUnit_Framework_TestCase
         $this->assertContains(
             $model['property'], $widget->render(),
             'Model should be rendered in the view'
+        );
+    }
+
+    public function testModelShouldBeConvertibleToArray()
+    {
+        $this->widget->setModel(array());
+        $this->assertInternalType('array', $this->widget->getModel());
+        $this->widget->setModel(new stdClass());
+        $this->assertInternalType('array', $this->widget->getModel());
+        $this->widget->setModel(new Zend_Config(array()));
+        $this->assertInternalType('array', $this->widget->getModel());
+        try {
+            $this->widget->setModel('a string');
+            $this->fail("Exception not raised");
+        } catch (InvalidArgumentException $e) {
+            $this->assertEquals(
+                "Model must be array, implement toArray, or it should be an object",
+                $e->getMessage()
+            );
+        }
+    }
+
+    public function testTitleShouldBeAddedToModelIfSet()
+    {
+        $this->widget->setTitle('My title');
+        $this->assertArrayHasKey('title', $this->widget->getModel());
+        $this->widget->setModel(array('title' => 'foobar'));
+        $model = $this->widget->getModel();
+        $this->assertEquals(
+            $this->widget->getTitle(), $model['title'],
+            "Model title should override title attribute"
         );
     }
 }

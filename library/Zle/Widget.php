@@ -36,7 +36,17 @@ class Zle_Widget
     /**
      * @var mixed model spec as defined in Zend_View#partial
      */
-    protected $model;
+    protected $model = array();
+
+    /**
+     * @var string title for the widget
+     */
+    protected $title;
+
+    /**
+     * @var int displaying order of this widget
+     */
+    protected $order;
 
     /**
      * Build a widget, calling options setter
@@ -127,17 +137,79 @@ class Zle_Widget
      */
     public function setModel($model)
     {
-        $this->model = $model;
+        if (is_array($model)) {
+            $this->model = $model;
+        } elseif (is_object($model)) {
+            if (method_exists($model, 'toArray')) {
+                $this->model = $model->toArray();
+            } else {
+                $this->model = get_object_vars($model);
+            }
+        } else {
+            throw new InvalidArgumentException(
+                "Model must be array, implement toArray, or it should be an object"
+            );
+        }
         return $this;
     }
 
     /**
      * Model getter
      *
-     * @return mixed the model
+     * @return array the model
      */
     public function getModel()
     {
+        if ($this->getTitle()) {
+            return array_merge($this->model, array('title' => $this->getTitle()));
+        }
         return $this->model;
+    }
+
+    /**
+     * Title setter
+     *
+     * @param string $title widget title
+     *
+     * @return Zle_Widget
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * Title Getter
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set the order specification, used in containers to give an order to
+     * the widget
+     *
+     * @param int $order numeric
+     *
+     * @return Zle_Widget
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+        return $this;
+    }
+
+    /**
+     * Order getter
+     *
+     * @return int
+     */
+    public function getOrder()
+    {
+        return $this->order;
     }
 }
