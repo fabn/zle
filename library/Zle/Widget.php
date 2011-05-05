@@ -34,6 +34,11 @@ class Zle_Widget
     protected $view;
 
     /**
+     * @var mixed model spec as defined in Zend_View#partial
+     */
+    protected $model;
+
+    /**
      * Build a widget, calling options setter
      *
      * @param array $options an array of options
@@ -104,6 +109,35 @@ class Zle_Widget
      */
     public function render()
     {
-        return $this->getView()->partial($this->getPartial());
+        return $this->getView()->partial($this->getPartial(), $this->getModel());
+    }
+
+    /**
+     * Model setter: If the $model is an array, it is passed to the view object's
+     * assign() method.
+     *
+     * If the $model is an object, it first checks to see if the object
+     * implements a 'toArray' method; if so, it passes the result of that
+     * method to to the view object's assign() method. Otherwise, the result of
+     * get_object_vars() is passed.
+     *
+     * @param mixed $model the model
+     *
+     * @return Zle_Widget
+     */
+    public function setModel($model)
+    {
+        $this->model = $model;
+        return $this;
+    }
+
+    /**
+     * Model getter
+     *
+     * @return mixed the model
+     */
+    public function getModel()
+    {
+        return $this->model;
     }
 }

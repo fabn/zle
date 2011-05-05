@@ -23,6 +23,7 @@ class WidgetTest extends PHPUnit_Framework_TestCase
         return array(
             array('partial', 'foo.phtml'),
             array('view', new Zend_View()),
+            array('model', 'model'),
         );
     }
 
@@ -52,7 +53,17 @@ class WidgetTest extends PHPUnit_Framework_TestCase
     {
         $view = new Zend_View();
         $view->setScriptPath(__DIR__ . '/_files');
-        $widget = new Zle_Widget(array('view' => $view, 'partial' => 'foo.phtml'));
-        $this->assertContains('This is the widget content', $widget->render());
+        $model = array('property' => uniqid());
+        $widget = new Zle_Widget(
+            array('view' => $view, 'partial' => 'foo.phtml', 'model' => $model)
+        );
+        $this->assertContains(
+            'This is the widget content', $widget->render(),
+            'Widget should render the given view'
+        );
+        $this->assertContains(
+            $model['property'], $widget->render(),
+            'Model should be rendered in the view'
+        );
     }
 }
