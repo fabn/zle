@@ -72,7 +72,7 @@ class RewriteRecipientsTest extends PHPUnit_Framework_TestCase
         $options = array_merge($this->smtpOptions, array('address' => $address));
         $transport = new Zle_Mail_Transport_RewriteRecipients($options);
         $this->assertEquals(
-            $address, $transport->getActualRecipients(),
+            array($address), $transport->getActualRecipients(),
             "Address should be parsed from constructor options"
         );
     }
@@ -85,7 +85,7 @@ class RewriteRecipientsTest extends PHPUnit_Framework_TestCase
         $messages = $this->transport->getSentEmails();
         $this->assertEquals(1, count($messages), "A message should be delivered");
         $this->assertEquals(
-            array(self::TESTING_ADDRESS), $messages[0]->getAllRecipients(),
+            array(self::TESTING_ADDRESS), $messages[0]->getRecipients(),
             "Recipient should be changed to " . self::TESTING_ADDRESS
         );
     }
@@ -100,10 +100,13 @@ class RewriteRecipientsTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($messages), "A message should be delivered");
         /** @var $sentMail Zend_Mail */
         $sentMail = $messages[0];
-        $this->assertContains($realAddress, $sentMail->getBodyHtml(true),
+        $this->assertContains(
+            $realAddress, quoted_printable_decode($sentMail->getBodyHtml(true)),
             "Original recipient should be added to the mail html body"
         );
-        $this->assertContains($realAddress, $sentMail->getBodyText(true),
+        //Zend_Debug::dump($sentMail->getBodyHtml(true));
+        $this->assertContains(
+            $realAddress, quoted_printable_decode($sentMail->getBodyText(true)),
             "Original recipient should be added to the mail text body"
         );
     }
@@ -114,7 +117,7 @@ class RewriteRecipientsTest extends PHPUnit_Framework_TestCase
     public function testGetSentEmailsThrowsIfUnitTestIsNotEnabled()
     {
         // disable unit testing mode to test for exceptions
-        Zle_Mail_Transport_RewriteRecipients::$_unitTestEnabled = true;
+        Zle_Mail_Transport_RewriteRecipients::$_unitTestEnabled = false;
         $this->transport->getSentEmails();
     }
 
@@ -130,7 +133,6 @@ class RewriteRecipientsTest extends PHPUnit_Framework_TestCase
         $mail->setSubject('Subject');
         $mail->setBodyHtml('Body HTML');
         $mail->setBodyText('Body Text');
-        $mail->addTo('user3@example.com');
         return $mail;
     }
 }

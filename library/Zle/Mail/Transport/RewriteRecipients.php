@@ -34,6 +34,16 @@ class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
     public static $_unitTestEnabled = false;
 
     /**
+     * @var array recipients container
+     */
+    protected $actualRecipients;
+
+    /**
+     * @var array
+     */
+    protected $_sentEmails;
+
+    /**
      * Constructor. Called by application.ini
      *
      * @param array $config OPTIONAL (Default: null)
@@ -42,13 +52,15 @@ class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
      */
     public function __construct(array $config = array())
     {
-
+        if (isset($config['address'])) {
+            $this->setActualRecipients(array($config['address']));
+            unset($config['address']);
+        } else if (isset($config['addresses'])) {
+            $this->setActualRecipients($config['addresses']);
+            unset($config['addresses']);
+        }
+        parent::__construct($config['host'], $config);
     }
-
-    /**
-     * @var array recipients container
-     */
-    protected $actualRecipients;
 
     /**
      * Recipients setter
@@ -91,8 +103,12 @@ class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
         }
         // rewrite mail body
         $this->_appendOriginalRecipientsToBody($originalRecipients);
-        // call parent
-        parent::_sendMail();
+        if (self::$_unitTestEnabled) {
+            $this->_sentEmails[] = $this->_mail;
+        } else {
+            // call parent
+            parent::_sendMail();
+        }
     }
 
     /**
@@ -104,7 +120,10 @@ class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
      */
     public function getSentEmails()
     {
-
+        if (self::$_unitTestEnabled == false) {
+            throw new Zle_Exception("This method should be used only in testing mode");
+        }
+        return $this->_sentEmails;
     }
 
     /**
@@ -119,19 +138,19 @@ class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
         //html
         $html = $this->_mail->getBodyHtml(true);
         if (!empty($html)) {
-            $html .= "<br/><br/><h3>Right Recipients</h3><ul>";
-            foreach ($this->getRecipients() as $recipient) {
-                $html .= "<li>{$recipient}</li>";
+            $html .= "<br/><br/><h3>Original Recipients:</h3>\n<ul>";
+            foreach ($recipients as $recipient) {
+                $html .= "<li>$recipient</li>";
             }
-            $html .= "</ul><br/>";
+            $html .= "</ul>";
             $this->_mail->setBodyHtml($html);
         }
 
         //text
         $text = $this->_mail->getBodyText(true);
         if (!empty($text)) {
-            $text .= "\n\nRight Recipients";
-            foreach ($this->getRecipients() as $recipient) {
+            $text .= "\n\nOriginal Recipients:";
+            foreach ($recipients as $recipient) {
                 $text .= "- {$recipient}\n";
             }
             $text .= "\n";
