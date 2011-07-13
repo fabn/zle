@@ -89,11 +89,16 @@ class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
      * using the SMTP connection protocol configured in the base class
      *
      * @return void
+     *
+     * @throw Zend_Mail_Transport_Exception if no recipients are set
      */
     public function _sendMail()
     {
         // save original recipients
         $originalRecipients = $this->_mail->getRecipients();
+        if (empty($originalRecipients)) {
+            throw new Zend_Mail_Transport_Exception('No recipients given');
+        }
 
         // remove original recipients
         $this->_mail->clearRecipients();
@@ -135,8 +140,8 @@ class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
      */
     private function _appendOriginalRecipientsToBody(array $recipients)
     {
-        //html
-        $html = $this->_mail->getBodyHtml(true);
+        // html part processing
+        $html = quoted_printable_decode($this->_mail->getBodyHtml(true));
         if (!empty($html)) {
             $html .= "<br/><br/><h3>Original Recipients:</h3>\n<ul>";
             foreach ($recipients as $recipient) {
@@ -146,10 +151,10 @@ class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
             $this->_mail->setBodyHtml($html);
         }
 
-        //text
-        $text = $this->_mail->getBodyText(true);
+        // text
+        $text = quoted_printable_decode($this->_mail->getBodyText(true));
         if (!empty($text)) {
-            $text .= "\n\nOriginal Recipients:";
+            $text .= "\n\nOriginal Recipients:\n";
             foreach ($recipients as $recipient) {
                 $text .= "- {$recipient}\n";
             }

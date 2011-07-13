@@ -122,6 +122,33 @@ class RewriteRecipientsTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test for longMailBodyShouldNotBeBrokenByRewrite
+     */
+    public function testLongMailBodyShouldNotBeBrokenByRewrite()
+    {
+        $mailWithLongBody = $this->getMail()->setBodyText(str_repeat('12345', 60));
+        $mailWithLongBody->addTo('foo@example.com');
+        $this->transport->send($mailWithLongBody);
+        /** @var $delivered Zend_Mail */
+        $delivered = current($this->transport->getSentEmails());
+        $this->assertNotContains(
+            '=', quoted_printable_decode($delivered->getBodyText()->getContent()),
+            "Text should be encoded when appending to body"
+        );
+    }
+
+    /**
+     * Test for sendShouldThrowWhenNoRecipientsAreGiven
+     *
+     * @expectedException Zend_Mail_Transport_Exception
+     */
+    public function testSendShouldThrowWhenNoRecipientsAreGiven()
+    {
+        $this->transport->send($this->getMail());
+    }
+
+
+    /**
      * Return a new zend mail instance with some text inside and
      * no actualRecipients
      *
