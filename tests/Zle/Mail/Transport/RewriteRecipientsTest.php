@@ -80,13 +80,18 @@ class RewriteRecipientsTest extends PHPUnit_Framework_TestCase
     public function testSentMessageRecipientsIsOverridden()
     {
         $mail = $this->getMail();
-        $mail->addTo('real-user@example.com');
+        $actual = 'real-user@example.com';
+        $mail->addTo($actual);
         $this->transport->send($mail);
         $messages = $this->transport->getSentEmails();
         $this->assertEquals(1, count($messages), "A message should be delivered");
         $this->assertEquals(
             array(self::TESTING_ADDRESS), $messages[0]->getRecipients(),
             "Recipient should be changed to " . self::TESTING_ADDRESS
+        );
+        $this->assertNotRegExp(
+            "/^To:\\s+$actual$/m", $this->transport->header,
+            "Actual headers should not contain original to"
         );
     }
 
@@ -104,10 +109,13 @@ class RewriteRecipientsTest extends PHPUnit_Framework_TestCase
             $realAddress, quoted_printable_decode($sentMail->getBodyHtml(true)),
             "Original recipient should be added to the mail html body"
         );
-        //Zend_Debug::dump($sentMail->getBodyHtml(true));
         $this->assertContains(
             $realAddress, quoted_printable_decode($sentMail->getBodyText(true)),
             "Original recipient should be added to the mail text body"
+        );
+        $this->assertContains(
+            $realAddress, quoted_printable_decode($this->transport->body),
+            "Original recipient should be added to the raw text body"
         );
     }
 
@@ -126,14 +134,19 @@ class RewriteRecipientsTest extends PHPUnit_Framework_TestCase
      */
     public function testLongMailBodyShouldNotBeBrokenByRewrite()
     {
-        $mailWithLongBody = $this->getMail()->setBodyText(str_repeat('12345', 60));
+        $longString = str_repeat('12345', 60);
+        $mailWithLongBody = $this->getMail()->setBodyText($longString);
         $mailWithLongBody->addTo('foo@example.com');
         $this->transport->send($mailWithLongBody);
         /** @var $delivered Zend_Mail */
         $delivered = current($this->transport->getSentEmails());
-        $this->assertNotContains(
-            '=', quoted_printable_decode($delivered->getBodyText()->getContent()),
+        $this->assertContains(
+            $longString, quoted_printable_decode($delivered->getBodyText()->getContent()),
             "Text should be encoded when appending to body"
+        );
+        $this->assertContains(
+            $longString, quoted_printable_decode($this->transport->body),
+            "Actual body should not be broken by rewrite"
         );
     }
 
