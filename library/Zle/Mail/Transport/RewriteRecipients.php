@@ -13,7 +13,8 @@
  */
 
 /**
- * Zle_Mail_Transport_RewriteRecipients
+ * Zle_Mail_Transport_RewriteRecipients, this class could be useful in development
+ * to prevent actual mails to be sent. Configure it with application.ini file with
  *
  * @category Zle
  * @package  Zle_Mail
@@ -24,88 +25,102 @@
 class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
 {
 
-    /** @var array */
-    protected $rightRecipients;
+    /**
+     * Whether or not Zle_Mail_Transport_RewriteRecipients is being used with unit tests
+     *
+     * @internal
+     * @var bool
+     */
+    public static $_unitTestEnabled = false;
 
     /**
-     * @param array $rightRecipients
+     * Constructor. Called by application.ini
+     *
+     * @param array $config OPTIONAL (Default: null)
+     *
+     * @return \Zle_Mail_Transport_RewriteRecipients
      */
-    public function setRightRecipients($rightRecipients)
+    public function __construct(array $config = array())
     {
-        $this->rightRecipients = $rightRecipients;
+
     }
 
     /**
+     * @var array recipients container
+     */
+    protected $actualRecipients;
+
+    /**
+     * Recipients setter
+     *
+     * @param array $recipients an array of alternative recipients
+     *
+     * @return void
+     */
+    public function setActualRecipients(array $recipients)
+    {
+        $this->actualRecipients = $recipients;
+    }
+
+    /**
+     * Recipients getter
+     *
      * @return array
      */
-    public function getRightRecipients()
+    public function getActualRecipients()
     {
-        return $this->rightRecipients;
-    }
-
-    /** @var array */
-    protected $options;
-
-    /**
-     * @param array $options
-     */
-    public function setOptions($options)
-    {
-        $this->options = $options;
+        return $this->actualRecipients;
     }
 
     /**
-     * @return array
-     */
-    public function getOptions()
-    {
-        return $this->options;
-    }
-
-    /**
-     * Rewrite Recipients with address developer and send an email via the SMTP connection protocol
+     * Rewrite Recipients with configured address(es) and send the email
+     * using the SMTP connection protocol configured in the base class
      *
      * @return void
      */
     public function _sendMail()
     {
-        //save the current recipients
-        $this->setRightRecipients($this->_mail->getRecipients());
+        // save original recipients
+        $originalRecipients = $this->_mail->getRecipients();
 
-        //remove recipients
+        // remove original recipients
         $this->_mail->clearRecipients();
-
-        //set recipients with addresses developer
-        $this->_mail->addTo($this->getAddresses());
-
-        //append to body rightRecipients
-        $this->appendToBodyRightRecipients();
-
-        //call parent
+        // add rewritten ones
+        foreach ($this->getActualRecipients() as $address) {
+            $this->_mail->addTo($address);
+        }
+        // rewrite mail body
+        $this->_appendOriginalRecipientsToBody($originalRecipients);
+        // call parent
         parent::_sendMail();
     }
 
     /**
-     * @return array
+     * Return sent email with this transport
+     *
+     * @throws Zle_Exception if used without unit test enabled
+     *
+     * @return array an array of sent emails
      */
-    private function getAddresses()
+    public function getSentEmails()
     {
-        $resource = new Zend_Application_Resource_ResourceAbstract();
-        $this->setOptions($resource->getOptions());
-        return $this->options['addresses'];
+
     }
 
     /**
-     * Append to body the right recipients
+     * Append to body the original recipients of the message
+     *
+     * @param array $recipients an array of addresses
+     *
      * @return void
      */
-    private function appendToBodyRightRecipients()
+    private function _appendOriginalRecipientsToBody(array $recipients)
     {
         //html
         $html = $this->_mail->getBodyHtml(true);
         if (!empty($html)) {
             $html .= "<br/><br/><h3>Right Recipients</h3><ul>";
-            foreach ($this->getRightRecipients() as $recipient) {
+            foreach ($this->getRecipients() as $recipient) {
                 $html .= "<li>{$recipient}</li>";
             }
             $html .= "</ul><br/>";
@@ -116,7 +131,7 @@ class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
         $text = $this->_mail->getBodyText(true);
         if (!empty($text)) {
             $text .= "\n\nRight Recipients";
-            foreach ($this->getRightRecipients() as $recipient) {
+            foreach ($this->getRecipients() as $recipient) {
                 $text .= "- {$recipient}\n";
             }
             $text .= "\n";
