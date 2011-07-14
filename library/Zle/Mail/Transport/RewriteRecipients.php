@@ -85,6 +85,33 @@ class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
     }
 
     /**
+     * Send a mail using this transport
+     *
+     * @param  Zend_Mail $mail
+     * @access public
+     * @return void
+     * @throws Zend_Mail_Transport_Exception if mail is empty
+     */
+    public function send(Zend_Mail $mail)
+    {
+        // save original recipients
+        $originalRecipients = $mail->getRecipients();
+        if (empty($originalRecipients)) {
+            throw new Zend_Mail_Transport_Exception('No recipients given');
+        }
+
+        // remove original recipients
+        $mail->clearRecipients();
+        // add rewritten ones
+        foreach ($this->getActualRecipients() as $address) {
+            $mail->addTo($address);
+        }
+        // rewrite mail body
+        $this->_appendOriginalRecipientsToBody($originalRecipients, $mail);
+        parent::send($mail);
+    }
+
+    /**
      * Rewrite Recipients with configured address(es) and send the email
      * using the SMTP connection protocol configured in the base class
      *
@@ -94,20 +121,6 @@ class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
      */
     public function _sendMail()
     {
-        // save original recipients
-        $originalRecipients = $this->_mail->getRecipients();
-        if (empty($originalRecipients)) {
-            throw new Zend_Mail_Transport_Exception('No recipients given');
-        }
-
-        // remove original recipients
-        $this->_mail->clearRecipients();
-        // add rewritten ones
-        foreach ($this->getActualRecipients() as $address) {
-            $this->_mail->addTo($address);
-        }
-        // rewrite mail body
-        $this->_appendOriginalRecipientsToBody($originalRecipients);
         if (self::$_unitTestEnabled) {
             $this->_sentEmails[] = $this->_mail;
         } else {
@@ -135,31 +148,32 @@ class Zle_Mail_Transport_RewriteRecipients extends Zend_Mail_Transport_Smtp
      * Append to body the original recipients of the message
      *
      * @param array $recipients an array of addresses
+     * @param Zend_Mail $mail
      *
      * @return void
      */
-    private function _appendOriginalRecipientsToBody(array $recipients)
+    private function _appendOriginalRecipientsToBody(array $recipients, Zend_Mail $mail)
     {
         // html part processing
-        $html = quoted_printable_decode($this->_mail->getBodyHtml(true));
+        $html = quoted_printable_decode($mail->getBodyHtml(true));
         if (!empty($html)) {
             $html .= "<br/><br/><h3>Original Recipients:</h3>\n<ul>";
             foreach ($recipients as $recipient) {
                 $html .= "<li>$recipient</li>";
             }
             $html .= "</ul>";
-            $this->_mail->setBodyHtml($html);
+            $mail->setBodyHtml($html);
         }
 
         // text
-        $text = quoted_printable_decode($this->_mail->getBodyText(true));
+        $text = quoted_printable_decode($mail->getBodyText(true));
         if (!empty($text)) {
             $text .= "\n\nOriginal Recipients:\n";
             foreach ($recipients as $recipient) {
                 $text .= "- {$recipient}\n";
             }
             $text .= "\n";
-            $this->_mail->setBodyText($text);
+            $mail->setBodyText($text);
         }
     }
 }
