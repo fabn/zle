@@ -24,6 +24,54 @@
 class Zle_Widget_Container extends ArrayObject
 {
     /**
+     * Default area used for widgets
+     */
+    const DEFAULT_AREA = 'Zle_Widget';
+
+    /**
+     * @var array widget areas
+     */
+    protected static $areas = array();
+
+    /**
+     * Return an area for widgets
+     *
+     * @param string $name area name
+     *
+     * @return Zle_Widget_Container requested area
+     */
+    public static function getArea($name = self::DEFAULT_AREA)
+    {
+        if (!isset(self::$areas[$name])) {
+            self::$areas[$name] = new self();
+        }
+        return self::$areas[$name];
+    }
+
+    /**
+     * Unset the given area
+     *
+     * @param string $name area name
+     *
+     * @return void
+     */
+    public static function resetArea($name = self::DEFAULT_AREA)
+    {
+        unset(self::$areas[$name]);
+    }
+
+    /**
+     * Reset all areas
+     *
+     * @return void
+     */
+    public static function resetAllAreas()
+    {
+        self::$areas = array();
+    }
+
+
+    /**
      * Insert a widget respecting the position defined in its
      * order attribute
      *

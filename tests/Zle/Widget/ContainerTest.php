@@ -17,6 +17,12 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->container = new Zle_Widget_Container();
     }
 
+    protected function tearDown()
+    {
+        Zle_Widget_Container::resetAllAreas();
+    }
+
+
     /**
      * Widget factory
      *
@@ -61,5 +67,29 @@ class ContainerTest extends PHPUnit_Framework_TestCase
             $sorted_order, $returned_order,
             "Widgets should be returned in order when inserted"
         );
+    }
+
+    /**
+     * Test for shouldReturnDifferentInstances
+     */
+    public function testGetAreaShouldReturnDifferentInstances()
+    {
+        $this->assertNotSame(
+            Zle_Widget_Container::getArea(),
+            Zle_Widget_Container::getArea('leftSideBar'),
+            "Different areas should be returned"
+        );
+    }
+
+    /**
+     * Test for unsetAreaShouldClearArea
+     */
+    public function testUnsetAreaShouldClearArea()
+    {
+        $area = Zle_Widget_Container::getArea();
+        $area->append($this->getWidget());
+        $this->assertEquals(1, count(Zle_Widget_Container::getArea()));
+        Zle_Widget_Container::resetArea();
+        $this->assertEquals(0, count(Zle_Widget_Container::getArea()));
     }
 }
