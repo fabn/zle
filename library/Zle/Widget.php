@@ -49,6 +49,18 @@ class Zle_Widget
     protected $order;
 
     /**
+     * Build a return a widget
+     *
+     * @param array $options constructor options
+     *
+     * @return Zle_Widget
+     */
+    public static function factory(array $options = array())
+    {
+        return new self($options);
+    }
+
+    /**
      * Build a widget, calling options setter
      *
      * @param array $options an array of options

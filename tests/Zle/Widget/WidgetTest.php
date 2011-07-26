@@ -99,4 +99,11 @@ class WidgetTest extends PHPUnit_Framework_TestCase
             "Model title should override title attribute"
         );
     }
+
+    public function testFactoryMethod()
+    {
+        $spec = array('title' => 'foo');
+        $widget = Zle_Widget::factory($spec);
+        $this->assertEquals('foo', $widget->getTitle());
+    }
 }
