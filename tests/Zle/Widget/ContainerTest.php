@@ -33,10 +33,23 @@ class ContainerTest extends PHPUnit_Framework_TestCase
     protected function getWidget(array $options = array())
     {
         $defaultOptions = array(
-            'title' => sprintf("Widget #%d", $this->counter())
+            'title' => sprintf("Widget #%d", $this->counter()),
+            'name' => 'foo', 'model' => array(),
+            'view' => $this->getView(), 'partial' => 'foo.phtml',
         );
         $options = array_merge($defaultOptions, $options);
         return new Zle_Widget($options);
+    }
+
+    /**
+     * Return a configured view object
+     *
+     * @return Zend_View
+     */
+    protected function getView()
+    {
+        $view = new Zend_View();
+        return $view->setScriptPath(__DIR__ . '/_files');
     }
 
     /**
@@ -91,5 +104,15 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(1, count(Zle_Widget_Container::getArea()));
         Zle_Widget_Container::resetArea();
         $this->assertEquals(0, count(Zle_Widget_Container::getArea()));
+    }
+
+    /**
+     * Test for shouldHaveARenderMethod
+     */
+    public function testShouldHaveARenderMethod()
+    {
+        $this->container->append($this->getWidget(array('title' => 'Title 1')));
+        $this->container->append($this->getWidget(array('title' => 'Title 2')));
+        $this->assertRegExp('/Title 1.*Title 2/s', $this->container->render());
     }
 }

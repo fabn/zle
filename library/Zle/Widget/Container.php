@@ -89,4 +89,29 @@ class Zle_Widget_Container extends ArrayObject
             $this->append($widget);
         }
     }
+
+    /**
+     * Return a string representation of all widgets
+     *
+     * @return string
+     */
+    public function render()
+    {
+        $output = '';
+        foreach ($this as $widget) {
+            /** @var $widget Zle_Widget */
+            $output .= $widget->render();
+        }
+        return $output;
+    }
+
+    /**
+     * Proxy to render
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->render();
+    }
 }
