@@ -115,4 +115,26 @@ class ContainerTest extends PHPUnit_Framework_TestCase
         $this->container->append($this->getWidget(array('title' => 'Title 2')));
         $this->assertRegExp('/Title 1.*Title 2/s', $this->container->render());
     }
+
+    /**
+     * Test for containerShouldBeConvertibleToAString
+     */
+    public function testContainerShouldBeConvertibleToAString()
+    {
+        $this->container->append($this->getWidget(array('title' => 'Title 1')));
+        $this->assertSame(
+            $this->container->render(), (string)$this->container
+        );
+    }
+
+    /**
+     * Test for shouldUseAppendWhenOrderIsNotGiven
+     */
+    public function testShouldUseAppendWhenOrderIsNotGiven()
+    {
+        $this->container->insert($this->getWidget(array('title' => 'first')));
+        $this->container->insert($this->getWidget(array('title' => 'second')));
+        $this->assertRegExp('/first.*second/s', $this->container->render());
+    }
+
 }
