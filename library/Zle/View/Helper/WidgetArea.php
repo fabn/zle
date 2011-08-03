@@ -138,7 +138,7 @@ class Zle_View_Helper_WidgetArea extends Zend_View_Helper_Abstract
     /**
      * Configured area getter
      *
-     * @param string $configuredArea
+     * @param string $configuredArea area name
      *
      * @return Zle_View_Helper_WidgetArea fluent interface
      */
