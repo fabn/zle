@@ -125,6 +125,22 @@ class WidgetAreaTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test for getAreaShouldReturnDefaultConfiguredArea
+     */
+    public function testGetAreaShouldReturnDefaultConfiguredArea()
+    {
+        // append a widget to the given area
+        $this->helper->widgetArea('sidebar')
+                ->append($this->getWidgetOptions(array('title' => 'foo')));
+        // check for same instance
+        $this->assertSame(
+            $this->helper->widgetArea('sidebar')->getArea(),
+            $this->helper->getArea('sidebar'),
+            "Should be the same instance when referenced with getArea"
+        );
+    }
+
+    /**
      * Return a configured view object
      *
      * @return Zend_View
