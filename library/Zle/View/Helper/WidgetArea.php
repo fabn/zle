@@ -73,6 +73,12 @@ class Zle_View_Helper_WidgetArea extends Zend_View_Helper_Abstract
      */
     public function insert($position, $spec)
     {
+        // build a widget
+        $widget = $this->getWidgetFromSpec($spec);
+        // force its order
+        $widget->setOrder($position);
+        // insert it into the configured container
+        $this->getArea()->insert($widget);
     }
 
     /**

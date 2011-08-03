@@ -125,6 +125,19 @@ class WidgetAreaTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test for insertShouldChangeWidgetOrder
+     */
+    public function testInsertShouldChangeWidgetOrder()
+    {
+        $this->helper->insert(2, $this->getWidgetOptions(array('title' => 'first')));
+        $this->helper->insert(1, $this->getWidgetOptions(array('title' => 'second')));
+        $this->assertRegExp(
+            '/second.*first/s', $this->helper->render(),
+            'Insert should override order'
+        );
+    }
+
+    /**
      * Test for getAreaShouldReturnDefaultConfiguredArea
      */
     public function testGetAreaShouldReturnDefaultConfiguredArea()
@@ -156,6 +169,16 @@ class WidgetAreaTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Test for shouldThrowWhenUsingWrongSpec
+     *
+     * @expectedException Zle_Exception
+     */
+    public function testShouldThrowWhenUsingWrongSpec()
+    {
+        $this->helper->append(new stdClass());
+    }
+
 
     /**
      * Return a configured view object
@@ -180,7 +203,7 @@ class WidgetAreaTest extends PHPUnit_Framework_TestCase
     {
         return array_merge(
             array(
-                 'name' => 'foo', 'model' => array(),
+                 'name' => 'foo', 'model' => array(), 'title' => 'Widget Title',
                  'view' => $this->getView(), 'partial' => 'foo.phtml',
             ),
             $options
