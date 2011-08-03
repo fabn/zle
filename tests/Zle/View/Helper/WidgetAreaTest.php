@@ -141,6 +141,23 @@ class WidgetAreaTest extends PHPUnit_Framework_TestCase
     }
 
     /**
+     * Test for shouldBeConvertibleToAString
+     */
+    public function testShouldBeConvertibleToAString()
+    {
+        // append a widget to the given area
+        $this->helper->widgetArea('sidebar')
+                ->append($this->getWidgetOptions(array('title' => 'foo')));
+        // check for same instance
+        $this->assertSame(
+            $this->helper->render(),
+            (string)$this->helper,
+            "Should return the same content when echoed"
+        );
+    }
+
+
+    /**
      * Return a configured view object
      *
      * @return Zend_View
