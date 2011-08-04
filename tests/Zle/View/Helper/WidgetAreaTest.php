@@ -181,6 +181,22 @@ class WidgetAreaTest extends PHPUnit_Framework_TestCase
 
 
     /**
+     * Test for shouldHaveAnIsEmptyMethod
+     */
+    public function testShouldHaveAnIsEmptyMethod()
+    {
+        $this->assertTrue(
+            $this->helper->isEmpty(), "Default area should be empty"
+        );
+        // add a widget
+        $this->helper->append($this->getWidgetOptions(array('title' => 'foo')));
+        $this->assertFalse(
+            $this->helper->isEmpty(), "Default area should not be empty"
+        );
+    }
+
+
+    /**
      * Return a configured view object
      *
      * @return Zend_View

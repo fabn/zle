@@ -136,6 +136,16 @@ class Zle_View_Helper_WidgetArea extends Zend_View_Helper_Abstract
     }
 
     /**
+     * Return true iff the configured area is empty
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return count($this->getArea()) == 0;
+    }
+
+    /**
      * Configured area getter
      *
      * @param string $configuredArea area name
