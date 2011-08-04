@@ -187,6 +187,11 @@ class Zle_View_Helper_WidgetArea extends Zend_View_Helper_Abstract
                 )
             );
         }
+        // attach view helper view instance to the view if not set
+        if (!$spec->hasView() && $this->view != null) {
+            $spec->setView($this->view);
+        }
+        // return the widget
         return $spec;
     }
 }

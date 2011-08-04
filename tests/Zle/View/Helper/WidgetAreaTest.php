@@ -195,6 +195,18 @@ class WidgetAreaTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * Test for shouldSetWidgetViewWhenNoSet
+     */
+    public function testShouldSetWidgetViewWhenNoSet()
+    {
+        $view = new Zend_View();
+        $this->helper->setView($view);
+        $widget = Zle_Widget::factory(array('title' => 'foo'));
+        $this->assertFalse($widget->hasView(), "Widget should not have a view");
+        $this->helper->append($widget);
+        $this->assertTrue($widget->hasView(), "Widget should have helper view");
+    }
 
     /**
      * Return a configured view object
