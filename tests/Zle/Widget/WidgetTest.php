@@ -106,4 +106,17 @@ class WidgetTest extends PHPUnit_Framework_TestCase
         $widget = Zle_Widget::factory($spec);
         $this->assertEquals('foo', $widget->getTitle());
     }
+
+    public function testHasViewMethod()
+    {
+        $this->assertFalse(
+            Zle_Widget::factory()->hasView(),
+            "Should return false for a widget without a view"
+        );
+        $this->assertTrue(
+            Zle_Widget::factory(array('view' => new Zend_View()))->hasView(),
+            "Should return true for a widget with a view"
+        );
+    }
+
 }

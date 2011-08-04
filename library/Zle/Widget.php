@@ -99,6 +99,16 @@ class Zle_Widget
     }
 
     /**
+     * Return true iff view has been set for this widget
+     *
+     * @return bool
+     */
+    public function hasView()
+    {
+        return null !== $this->view;
+    }
+
+    /**
      * View Setter
      *
      * @param Zend_View_Interface $view view used for widget render
