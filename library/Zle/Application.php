@@ -69,7 +69,7 @@ class Zle_Application extends Zend_Application
             return false;
         }
         if ($lastUpdate > $lastVersionTime) {
-            $cache->save($lastVersionTime, self::TIMESTAMP_KEY);
+            $cache->save($lastUpdate, self::TIMESTAMP_KEY);
             // reload config
             return false;
         }
